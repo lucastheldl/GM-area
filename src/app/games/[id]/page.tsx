@@ -1,12 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { Plus, Layers, X, ChevronRight, ChevronDown, Trash2, Save, PlusCircle, Dice1Icon, Dice5Icon } from 'lucide-react';
+import { Plus, Layers, X, ChevronRight, ChevronDown, Trash2, Save, PlusCircle, Dice1Icon, Dice5Icon, Trash } from 'lucide-react';
 import { CellValue, Column, Row, Table } from '@/@types';
 import { COLUMN_TYPES } from '@/consts';
 import { CreateTableForm } from './table-form';
-
-
-
 
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
@@ -53,7 +50,6 @@ const TablesSidebar: React.FC<{
     </div>
   );
 };
-
 
 
 // Table view component
@@ -113,6 +109,8 @@ const TableView: React.FC<{
 
   }
 
+  
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -140,6 +138,7 @@ const TableView: React.FC<{
             <Dice5Icon className="h-4 w-4 mr-1" />
             Random Throw
           </button>
+      
         </div>
       </div>
 

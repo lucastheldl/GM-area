@@ -1,6 +1,7 @@
 "use client"
 import { useForm } from 'react-hook-form';
 import { AlertCircle, Shield, Sword, User, Lock, Mail } from 'lucide-react';
+import { signup } from '@/actions/users';
 
 type FormData = {
   email: string;
@@ -22,13 +23,12 @@ export default function SignInPage() {
   });
 
   const onSubmit = async (data: FormData) => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('Sign in attempt with:', data);
-        resolve(null);
-      }, 1500);
-    });
+  
+   try {
+    await signup(data.email,data.password);
+   } catch (error) {
+    console.log("Error while signing up")
+   }
   };
 
   return (

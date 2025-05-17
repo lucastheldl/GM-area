@@ -1,0 +1,43 @@
+import { userTable } from "@/db/schema";
+import { clearSessionCookie, setSessionCookie } from "@/lib/auth";
+import { eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { db } from "@/db";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+export async function signup(email: string, password: string) {
+  const existing = await db.select().from(userTable).where(eq(userTable.email, email));
+
+  if (existing.length > 0) {
+    throw new Error("Email already exists");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await db.insert(userTable).values({ email, password:passwordHash });
+}
+
+export async function signIn(email: string, password: string) {
+  const user = await db.select().from(userTable).where(eq(userTable.email, email)).then(res => res[0]);
+
+  if (!user) {
+    throw new Error("Invalid credentials");
+  }
+
+  const isValid = await bcrypt.compare(password, user.password);
+  if (!isValid) {
+    throw new Error("Invalid credentials");
+  }
+
+  const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: "7d",
+  });
+
+  setSessionCookie(token);
+}
+
+export async function logout() {
+  clearSessionCookie();
+}
