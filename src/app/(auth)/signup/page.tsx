@@ -148,7 +148,7 @@ export default function SignInPage() {
             <p className="text-sm text-slate-400">
               Alreadyhave an account?{" "}
               <a
-                href="#"
+                href="/signin"
                 className="font-medium text-indigo-400 hover:text-indigo-300"
               >
                 Sign in
