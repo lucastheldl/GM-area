@@ -1,7 +1,8 @@
-"use client"
-import { useForm } from 'react-hook-form';
-import { AlertCircle, Shield, Sword, User, Lock, Mail } from 'lucide-react';
-import { signIn } from '@/actions/users';
+"use client";
+import { useForm } from "react-hook-form";
+import { AlertCircle, Shield, Sword, User, Lock, Mail } from "lucide-react";
+import { signIn } from "@/actions/users";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   email: string;
@@ -16,18 +17,21 @@ export default function SignInPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       rememberMe: false,
     },
   });
+  const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
-      try {
-       await signIn(data.email,data.password);
-      } catch (error) {
-       console.log("Error while signing up")
-      }
+    try {
+      await signIn(data.email, data.password);
+
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -39,22 +43,25 @@ export default function SignInPage() {
             <Sword className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">RPG GM Shield</h1>
-          <p className="text-slate-400 mt-1">Sign in to command your adventure</p>
+          <p className="text-slate-400 mt-1">
+            Sign in to command your adventure
+          </p>
         </div>
-        
+
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
           {(errors.email || errors.password) && (
             <div className="bg-red-900/20 border border-red-800 text-red-300 p-3 rounded-md flex items-start">
               <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
-              <span>
-                {errors.email?.message || errors.password?.message}
-              </span>
+              <span>{errors.email?.message || errors.password?.message}</span>
             </div>
           )}
-          
+
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-slate-300">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-slate-300"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -64,11 +71,11 @@ export default function SignInPage() {
               <input
                 id="email"
                 type="email"
-                {...register('email', {
-                  required: 'Please enter your email address',
+                {...register("email", {
+                  required: "Please enter your email address",
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Invalid email address',
+                    message: "Invalid email address",
                   },
                 })}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-700 rounded-md bg-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
@@ -76,9 +83,12 @@ export default function SignInPage() {
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-slate-300">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-slate-300"
+            >
               Password
             </label>
             <div className="relative">
@@ -88,11 +98,11 @@ export default function SignInPage() {
               <input
                 id="password"
                 type="password"
-                {...register('password', {
-                  required: 'Please enter your password',
+                {...register("password", {
+                  required: "Please enter your password",
                   minLength: {
                     value: 8,
-                    message: 'Password must be at least 8 characters',
+                    message: "Password must be at least 8 characters",
                   },
                 })}
                 className="block w-full pl-10 pr-3 py-2 border border-slate-700 rounded-md bg-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent"
@@ -100,24 +110,30 @@ export default function SignInPage() {
               />
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
                 id="remember-me"
                 type="checkbox"
-                {...register('rememberMe')}
+                {...register("rememberMe")}
                 className="h-4 w-4 bg-slate-800 border-slate-700 rounded text-indigo-600 focus:ring-indigo-600 focus:ring-offset-0"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-400">
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-slate-400"
+              >
                 Remember me
               </label>
             </div>
-            <a href="#" className="text-sm font-medium text-indigo-400 hover:text-indigo-300">
+            <a
+              href="#"
+              className="text-sm font-medium text-indigo-400 hover:text-indigo-300"
+            >
               Forgot password?
             </a>
           </div>
-          
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -125,31 +141,52 @@ export default function SignInPage() {
           >
             {isSubmitting ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Signing in...
               </>
             ) : (
-              'Sign in'
+              "Sign in"
             )}
           </button>
-          
+
           <div className="mt-6 text-center">
             <p className="text-sm text-slate-400">
-              Don't have an account?{' '}
-              <a href="#" className="font-medium text-indigo-400 hover:text-indigo-300">
+              Don't have an account?{" "}
+              <a
+                href="#"
+                className="font-medium text-indigo-400 hover:text-indigo-300"
+              >
                 Create account
               </a>
             </p>
           </div>
         </form>
-        
+
         {/* Footer */}
         <div className="px-6 py-4 bg-slate-900/50 flex items-center justify-center space-x-2">
           <Shield className="h-4 w-4 text-slate-500" />
-          <span className="text-xs text-slate-500">Secure login - Your adventure awaits</span>
+          <span className="text-xs text-slate-500">
+            Secure login - Your adventure awaits
+          </span>
         </div>
       </div>
     </div>
