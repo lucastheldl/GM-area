@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { gameTable } from "@/db/schema";
+import { gameTable, tableTable } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 
 export async function getUserGames() {
@@ -14,5 +14,46 @@ export async function getUserGames() {
     .from(gameTable)
     .where(eq(gameTable.userId, Number(user.id)));
 
-  return { games };
+  const gamesWithTables = await Promise.all(
+    games.map(async (game) => {
+      const tables = await db
+        .select()
+        .from(tableTable)
+        .where(eq(tableTable.gameId, game.id));
+
+      return {
+        ...game,
+        tables,
+      };
+    })
+  );
+
+  return { gamesWithTables };
+}
+export async function getGame(id: string) {
+  const user = await getSession();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const game = await db
+    .select()
+    .from(gameTable)
+    .where(
+      and(eq(gameTable.id, Number(id)), eq(gameTable.userId, Number(user.id)))
+    );
+
+  return { game };
+}
+export async function createGame(data: any) {
+  const user = await getSession();
+
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  await db
+    .insert(gameTable)
+    .values({ ...data, userId: user.id })
+    .returning();
 }

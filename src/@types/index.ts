@@ -1,7 +1,8 @@
-
 export interface Game {
   id: number;
   name: string;
+  tables?: any;
+  createdAt: Date | null;
 }
 
 export interface Table {

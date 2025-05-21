@@ -1,14 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Plus, Users, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { getUserGames } from "@/actions/games";
-
-// Define types
-interface Game {
-  id: number;
-  name: string;
-}
+import { createGame, getUserGames } from "@/actions/games";
+import dayjs from "dayjs";
+import type { Game } from "@/@types";
 
 interface GameCardProps {
   game: Game;
@@ -37,12 +34,12 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
         <div className="flex items-center text-slate-400 mb-4">
           <Users className="h-4 w-4 mr-2" />
           <span>
-            {game.tables} {game.tables === 1 ? "Table" : "Tables"}
+            {game.tables.length} {game.tables.length === 1 ? "Table" : "Tables"}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-xs text-slate-500">
-            Created {game.createdAt}
+            Created {dayjs(game.createdAt).format("DD/MM/YYYY")}
           </span>
           <ChevronRight className="h-5 w-5 text-indigo-400" />
         </div>
@@ -76,14 +73,19 @@ const CreateGameModal: React.FC<CreateGameModalProps> = ({
 }) => {
   const [gameName, setGameName] = useState<string>("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (gameName.trim()) {
       onCreateGame(gameName);
       setGameName("");
       onClose();
     }
-  };
+    try {
+      await createGame({ name: gameName });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   if (!isOpen) return null;
 
@@ -145,7 +147,7 @@ const GamesPage: React.FC = () => {
   useEffect(() => {
     async function fetchGames() {
       const fetchedGames = await getUserGames();
-      setGames(fetchedGames.games);
+      setGames(fetchedGames.gamesWithTables);
     }
     fetchGames();
   }, []);

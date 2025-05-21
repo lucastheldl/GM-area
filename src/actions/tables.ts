@@ -10,3 +10,8 @@ export async function getTablesFromGame(id: number) {
 
   return { tables };
 }
+export async function createTable(data: any) {
+  const table = await db.insert(tableTable).values(data).returning();
+
+  return { table };
+}
