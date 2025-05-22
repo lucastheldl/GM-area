@@ -6,13 +6,14 @@ import { cellValues } from "./cell-values";
 
 export const rowTable = pgTable("rows", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  tableId: integer().notNull().references(() => tableTable.id),
+  table_id: integer()
+    .notNull()
+    .references(() => tableTable.id),
 });
 
-export const rowsRelations = relations(rowTable, ({ one,many }) => ({
- 
+export const rowsRelations = relations(rowTable, ({ one, many }) => ({
   table: one(tableTable, {
-    fields: [rowTable.tableId],
+    fields: [rowTable.table_id],
     references: [tableTable.id],
   }),
   cellValues: many(cellValues),

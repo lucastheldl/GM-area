@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1747614846209,
-      "tag": "0000_condemned_flatman",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1747788212312,
-      "tag": "0001_warm_penance",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1747788403808,
-      "tag": "0002_free_fantastic_four",
+      "when": 1747888465344,
+      "tag": "0000_burly_mandroid",
       "breakpoints": true
     }
   ]

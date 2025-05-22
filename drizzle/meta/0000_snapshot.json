@@ -1,5 +1,5 @@
 {
-  "id": "9809114d-ce8e-4c0e-9176-88a58d3c7767",
+  "id": "b9235855-ff5f-482a-af78-134eb16e33ab",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -25,14 +25,14 @@
             "cycle": false
           }
         },
-        "rowId": {
-          "name": "rowId",
+        "row_id": {
+          "name": "row_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "columnId": {
-          "name": "columnId",
+        "column_id": {
+          "name": "column_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -46,12 +46,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "cell_values_rowId_rows_id_fk": {
-          "name": "cell_values_rowId_rows_id_fk",
+        "cell_values_row_id_rows_id_fk": {
+          "name": "cell_values_row_id_rows_id_fk",
           "tableFrom": "cell_values",
           "tableTo": "rows",
           "columnsFrom": [
-            "rowId"
+            "row_id"
           ],
           "columnsTo": [
             "id"
@@ -59,12 +59,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "cell_values_columnId_columns_id_fk": {
-          "name": "cell_values_columnId_columns_id_fk",
+        "cell_values_column_id_columns_id_fk": {
+          "name": "cell_values_column_id_columns_id_fk",
           "tableFrom": "cell_values",
           "tableTo": "columns",
           "columnsFrom": [
-            "columnId"
+            "column_id"
           ],
           "columnsTo": [
             "id"
@@ -100,8 +100,8 @@
             "cycle": false
           }
         },
-        "tableId": {
-          "name": "tableId",
+        "table_id": {
+          "name": "table_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -127,12 +127,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "columns_tableId_table_id_fk": {
-          "name": "columns_tableId_table_id_fk",
+        "columns_table_id_tables_id_fk": {
+          "name": "columns_table_id_tables_id_fk",
           "tableFrom": "columns",
-          "tableTo": "table",
+          "tableTo": "tables",
           "columnsFrom": [
-            "tableId"
+            "table_id"
           ],
           "columnsTo": [
             "id"
@@ -174,21 +174,28 @@
           "primaryKey": false,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "games_userId_users_id_fk": {
-          "name": "games_userId_users_id_fk",
+        "games_user_id_users_id_fk": {
+          "name": "games_user_id_users_id_fk",
           "tableFrom": "games",
           "tableTo": "users",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -224,8 +231,8 @@
             "cycle": false
           }
         },
-        "tableId": {
-          "name": "tableId",
+        "table_id": {
+          "name": "table_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -233,12 +240,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "rows_tableId_table_id_fk": {
-          "name": "rows_tableId_table_id_fk",
+        "rows_table_id_tables_id_fk": {
+          "name": "rows_table_id_tables_id_fk",
           "tableFrom": "rows",
-          "tableTo": "table",
+          "tableTo": "tables",
           "columnsFrom": [
-            "tableId"
+            "table_id"
           ],
           "columnsTo": [
             "id"
@@ -253,8 +260,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.table": {
-      "name": "table",
+    "public.tables": {
+      "name": "tables",
       "schema": "",
       "columns": {
         "id": {
@@ -264,7 +271,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "table_id_seq",
+            "name": "tables_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -280,8 +287,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "gameId": {
-          "name": "gameId",
+        "game_id": {
+          "name": "game_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -289,12 +296,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "table_gameId_games_id_fk": {
-          "name": "table_gameId_games_id_fk",
-          "tableFrom": "table",
+        "tables_game_id_games_id_fk": {
+          "name": "tables_game_id_games_id_fk",
+          "tableFrom": "tables",
           "tableTo": "games",
           "columnsFrom": [
-            "gameId"
+            "game_id"
           ],
           "columnsTo": [
             "id"

@@ -5,7 +5,7 @@ import { Plus, Layers, PlusCircle, Dice5Icon } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
 import { CreateTableForm } from "../[id]/table-form";
-import { createTable } from "@/actions/tables";
+import { createColumn, createTable, getTable } from "@/actions/tables";
 
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
@@ -120,14 +120,14 @@ const TableView: React.FC<{
     }
   };
 
-  const handleAddColumn = () => {
+  async function handleAddColumn() {
     if (newColumnName.trim()) {
       onAddColumn(table.id, newColumnName, newColumnType);
       setIsAddingColumn(false);
       setNewColumnName("");
       setNewColumnType("text");
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -321,10 +321,19 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     }
   }, [activeTableId, tables, isCreatingTable]);
 
-  const handleTableSelect = (tableId: number) => {
-    setActiveTableId(tableId);
-    setIsCreatingTable(false);
-  };
+  async function handleTableSelect(tableId: number) {
+    try {
+      const fullTable = await getTable(tableId);
+
+      console.log(fullTable);
+      setActiveTableId(tableId);
+      setIsCreatingTable(false);
+
+      //setColumns(fullTable.columns);
+    } catch (error) {
+      console.log("Error when selecting table");
+    }
+  }
 
   const handleCreateTableClick = () => {
     setIsCreatingTable(true);
@@ -338,7 +347,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     try {
       const createdTable = await createTable({
         name: newTable.name,
-        gameId: newTable.gameId,
+        game_id: newTable.gameId,
         columns: newColumns,
       });
       console.log(createdTable);
@@ -414,35 +423,45 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     }
   };
 
-  const handleAddColumn = (tableId: number, name: string, type: string) => {
+  async function handleAddColumn(tableId: number, name: string, type: string) {
     // Create new column
     const columnId = Math.max(0, ...columns.map((c) => c.id)) + 1;
     const tableColumns = columns.filter((col) => col.tableId === tableId);
     const order = tableColumns.length;
 
-    const newColumn = {
-      id: columnId,
-      tableId,
-      name,
-      type,
-      order,
-    };
+    try {
+      const newColumn = await createColumn({
+        table_id: tableId,
+        name,
+        type,
+        order,
+      });
+      console.log(newColumn);
+      const formattedNewColumn = {
+        ...newColumn.column[0],
+        tableId: newColumn.column[0].table_id,
+      };
 
-    setColumns([...columns, newColumn]);
+      setColumns([...columns, formattedNewColumn]);
 
-    // Create empty cell values for all rows of this table
-    const tableRows = rows ? rows.filter((row) => row.tableId === tableId) : [];
-    const startCellId = Math.max(0, ...cellValues.map((cv) => cv.id)) + 1;
+      // Create empty cell values for all rows of this table
+      const tableRows = rows
+        ? rows.filter((row) => row.tableId === tableId)
+        : [];
+      const startCellId = Math.max(0, ...cellValues.map((cv) => cv.id)) + 1;
 
-    const newCellValues = tableRows.map((row, index) => ({
-      id: startCellId + index,
-      rowId: row.id,
-      columnId,
-      value: null,
-    }));
+      const newCellValues = tableRows.map((row, index) => ({
+        id: startCellId + index,
+        rowId: row.id,
+        columnId,
+        value: null,
+      }));
 
-    setCellValues([...cellValues, ...newCellValues]);
-  };
+      setCellValues([...cellValues, ...newCellValues]);
+    } catch (error) {
+      console.log("Erro ao criar coluna");
+    }
+  }
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);

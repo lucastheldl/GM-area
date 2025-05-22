@@ -6,7 +6,7 @@ import { tableTable } from "./table";
 export const gameTable = pgTable("games", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: varchar({ length: 255 }).notNull(),
-  userId: integer()
+  user_id: integer()
     .notNull()
     .references(() => userTable.id),
   createdAt: timestamp().defaultNow(),
@@ -14,7 +14,7 @@ export const gameTable = pgTable("games", {
 
 export const rowsRelations = relations(gameTable, ({ one, many }) => ({
   userTable: one(userTable, {
-    fields: [gameTable.userId],
+    fields: [gameTable.user_id],
     references: [userTable.id],
   }),
   tables: many(tableTable),

@@ -5,17 +5,21 @@ import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
 
 export const cellValues = pgTable("cell_values", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  rowId: integer().notNull().references(() => rowTable.id),
-  columnId: integer().notNull().references(() => columnTable.id),
-  value: varchar({ length: 2048 }), 
+  row_id: integer()
+    .notNull()
+    .references(() => rowTable.id),
+  column_id: integer()
+    .notNull()
+    .references(() => columnTable.id),
+  value: varchar({ length: 2048 }),
 });
 export const cellValuesRelations = relations(cellValues, ({ one }) => ({
   column: one(columnTable, {
-    fields: [cellValues.columnId],
+    fields: [cellValues.column_id],
     references: [columnTable.id],
   }),
   row: one(rowTable, {
-    fields: [cellValues.rowId],
+    fields: [cellValues.row_id],
     references: [rowTable.id],
   }),
 }));

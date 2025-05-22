@@ -9,5 +9,5 @@ export default async function GamePage({
   const { id } = await params;
 
   const { game } = await getGame(id);
-  return <GameEventClientPage game={game[0]} />;
+  return <GameEventClientPage game={game} />;
 }

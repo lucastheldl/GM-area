@@ -12,14 +12,14 @@ export async function getUserGames() {
   const games = await db
     .select()
     .from(gameTable)
-    .where(eq(gameTable.userId, Number(user.id)));
+    .where(eq(gameTable.user_id, Number(user.id)));
 
   const gamesWithTables = await Promise.all(
     games.map(async (game) => {
       const tables = await db
         .select()
         .from(tableTable)
-        .where(eq(tableTable.gameId, game.id));
+        .where(eq(tableTable.game_id, game.id));
 
       return {
         ...game,
@@ -40,10 +40,17 @@ export async function getGame(id: string) {
     .select()
     .from(gameTable)
     .where(
-      and(eq(gameTable.id, Number(id)), eq(gameTable.userId, Number(user.id)))
+      and(eq(gameTable.id, Number(id)), eq(gameTable.user_id, Number(user.id)))
     );
 
-  return { game };
+  const tables = await db
+    .select()
+    .from(tableTable)
+    .where(eq(tableTable.game_id, Number(id)));
+
+  const gameWithTables = { ...game[0], tables };
+
+  return { game: gameWithTables };
 }
 export async function createGame(data: any) {
   const user = await getSession();
@@ -54,6 +61,6 @@ export async function createGame(data: any) {
 
   await db
     .insert(gameTable)
-    .values({ ...data, userId: user.id })
+    .values({ ...data, user_id: user.id })
     .returning();
 }
