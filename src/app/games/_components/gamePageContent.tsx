@@ -394,7 +394,14 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       }));
      const {cells}= await createCells(newCellValues);
 
-      setCellValues([...cellValues, ...cells]);
+      const formattedCells = cells.map((c, index) => ({
+        id:c.id,
+        rowId:c.id,
+        columnId: c.id,
+        value: null,
+      }));
+
+      setCellValues([...cellValues, ...formattedCells]);
     } catch (error) {
       console.log("Erro ao adicionar rows")
     }
