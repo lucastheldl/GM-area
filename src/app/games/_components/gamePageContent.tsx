@@ -5,7 +5,14 @@ import { Plus, Layers, PlusCircle, Dice5Icon } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
 import { CreateTableForm } from "../[id]/table-form";
-import { createCell, createCells, createColumn, createRow, createTable, getTable } from "@/actions/tables";
+import {
+  createCell,
+  createCells,
+  createColumn,
+  createRow,
+  createTable,
+  getTable,
+} from "@/actions/tables";
 
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
@@ -134,7 +141,6 @@ const TableView: React.FC<{
       handleCellBlur();
     }
   };
-
   const randomThrow = (id: number) => {};
 
   return (
@@ -233,7 +239,7 @@ const TableView: React.FC<{
                   key={column.id}
                   className="px-4 py-3 text-left text-sm font-medium text-slate-300 border-b border-slate-700"
                 >
-                  {column.name}
+                  {column.name ?? "Column"}
                   <span className="ml-2 text-xs text-slate-500">
                     {column.type}
                   </span>
@@ -322,15 +328,14 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   }, [activeTableId, tables, isCreatingTable]);
 
   async function handleTableSelect(tableId: number) {
-    console.log(columns);
     try {
-      const {table} = await getTable(tableId);
+      const { table } = await getTable(tableId);
 
-      console.log(table);
       setActiveTableId(tableId);
       setIsCreatingTable(false);
 
       setColumns(table.columns);
+      setRows(table.rows);
     } catch (error) {
       console.log("Error when selecting table");
     }
@@ -376,36 +381,37 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     setIsCreatingTable(false);
   }
 
-  async function handleAddRow  (tableId: number)  {
+  async function handleAddRow(tableId: number) {
     // Create a new row
     try {
-      const {row} = await createRow({table_id:tableId})
-      setRows([...rows, row[0]]);
+      const { row } = await createRow({ table_id: tableId });
+      const formattedRow = {
+        id: row[0].id,
+        tableId: row[0].id,
+      };
 
-       // Create empty cell values for each column
-      const tableColumns = columns
-        ? columns.filter((col) => col.tableId === tableId)
-        : [];
+      setRows([...(rows ?? []), formattedRow]);
 
-      const newCellValues = tableColumns.map((col, index) => ({
-        row_id:row[0].id,
+      const newCellValues = columns.map((col, index) => ({
+        row_id: formattedRow.id,
         column_id: col.id,
-        value: null,
+        value: "",
       }));
-     const {cells}= await createCells(newCellValues);
+      const { cells } = await createCells(newCellValues);
 
       const formattedCells = cells.map((c, index) => ({
-        id:c.id,
-        rowId:c.id,
-        columnId: c.id,
-        value: null,
+        id: c.id,
+        rowId: c.row_id,
+        columnId: c.column_id,
+        value: c.value,
       }));
 
       setCellValues([...cellValues, ...formattedCells]);
     } catch (error) {
-      console.log("Erro ao adicionar rows")
+      console.log(error);
+      console.log("Erro ao adicionar rows");
     }
-  };
+  }
 
   const handleUpdateCellValue = (
     cellValueId: number | null,
@@ -446,7 +452,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         type,
         order,
       });
-      console.log(newColumn);
+
       const formattedNewColumn = {
         ...newColumn.column[0],
         tableId: newColumn.column[0].table_id,
@@ -475,10 +481,10 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);
- /*  const activeTableColumns = columns.filter(
+  /*  const activeTableColumns = columns.filter(
     (col) => col.tableId === activeTableId
   ); */
- /*  const activeTableRows = rows
+  /*  const activeTableRows = rows
     ? rows.filter((row) => row.tableId === activeTableId)
     : []; */
   const relevantCellValues = cellValues.filter(
@@ -513,7 +519,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
           <TableView
             table={activeTable}
             columns={columns}
-            rows={rows??[]}
+            rows={rows ?? []}
             cellValues={relevantCellValues}
             onAddRow={handleAddRow}
             onUpdateCellValue={handleUpdateCellValue}

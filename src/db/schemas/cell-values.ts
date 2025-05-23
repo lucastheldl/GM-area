@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferModel, relations } from "drizzle-orm";
 import { columnTable } from "./column";
 import { rowTable } from "./rows";
 import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
@@ -23,3 +23,6 @@ export const cellValuesRelations = relations(cellValues, ({ one }) => ({
     references: [rowTable.id],
   }),
 }));
+
+export type CellValuesType = typeof cellValues.$inferInsert;
+export type NewCellValue = typeof cellValues.$inferSelect;

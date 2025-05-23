@@ -1,10 +1,14 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cellValues, columnTable, rowTable, tableTable } from "@/db/schema";
+import { NewCellValue } from "@/db/schemas/cell-values";
 
-
-interface Column{
-  id:number, tableId:number, name:string, type:string, order:number
+interface Column {
+  id: number;
+  tableId: number;
+  name: string;
+  type: string;
+  order: number;
 }
 export async function getTablesFromGame(id: number) {
   const tables = await db
@@ -21,6 +25,7 @@ export async function getTable(id: number) {
     t.name AS table_name,
     
     c.id AS column_id,
+    c.name AS column_name,
     c.type AS column_type,
     c.order AS column_order,
     
@@ -54,6 +59,7 @@ export async function getTable(id: number) {
       columnsMap.set(row.column_id, {
         id: row.column_id,
         type: row.column_type,
+        name: row.column_name,
         order: row.column_order,
       });
     }
@@ -67,7 +73,11 @@ export async function getTable(id: number) {
     }
 
     // Add cell value
-    if (row.row_id !== null && row.column_id !== null && row.cell_value_id !== null) {
+    if (
+      row.row_id !== null &&
+      row.column_id !== null &&
+      row.cell_value_id !== null
+    ) {
       const rowEntry = rowsMap.get(row.row_id);
       rowEntry.values[row.column_id] = {
         id: row.cell_value_id,
@@ -77,7 +87,9 @@ export async function getTable(id: number) {
   }
 
   // Assign sorted columns and rows
-  table.columns = [...columnsMap.values()].sort((a, b) => a.order - b.order) as Column[];
+  table.columns = [...columnsMap.values()].sort(
+    (a, b) => a.order - b.order
+  ) as Column[];
   table.rows = [...rowsMap.values()];
   return { table };
 }
@@ -98,9 +110,8 @@ export async function createRow(data: any) {
 
   return { row };
 }
-export async function createCells(data: any) {
-  const cells = await db.insert(rowTable).values(data).returning();
+export async function createCells(data: NewCellValue[]) {
+  const cells = await db.insert(cellValues).values(data).returning();
 
   return { cells };
 }
-
