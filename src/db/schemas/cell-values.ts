@@ -7,10 +7,10 @@ export const cellValues = pgTable("cell_values", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   row_id: integer()
     .notNull()
-    .references(() => rowTable.id),
+    .references(() => rowTable.id, { onDelete: "cascade" }),
   column_id: integer()
     .notNull()
-    .references(() => columnTable.id),
+    .references(() => columnTable.id, { onDelete: "cascade" }),
   value: varchar({ length: 2048 }),
 });
 export const cellValuesRelations = relations(cellValues, ({ one }) => ({

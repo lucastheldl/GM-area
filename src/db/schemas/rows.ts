@@ -8,7 +8,7 @@ export const rowTable = pgTable("rows", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   table_id: integer()
     .notNull()
-    .references(() => tableTable.id),
+    .references(() => tableTable.id, { onDelete: "cascade" }),
 });
 
 export const rowsRelations = relations(rowTable, ({ one, many }) => ({

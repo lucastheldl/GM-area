@@ -6,7 +6,6 @@ import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
 import { CreateTableForm } from "../[id]/table-form";
 import {
-  createCell,
   createCells,
   createColumn,
   createRow,
@@ -14,6 +13,7 @@ import {
   getTable,
 } from "@/actions/tables";
 import Link from "next/link";
+import { RandomThrowModal } from "./throwModal";
 
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
@@ -26,7 +26,12 @@ const TablesSidebar: React.FC<{
   return (
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
       <div className="p-4 border-b border-slate-700">
-        <Link href={"/"} className="flex gap-2 items-center text-sm text-slate-400 hover:text-slate-200"><ChevronLeft className="h-4 w-4"/> Back</Link>
+        <Link
+          href={"/"}
+          className="flex gap-2 items-center text-sm text-slate-400 hover:text-slate-200"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back
+        </Link>
         <h2 className="text-lg font-bold text-white">Game #{gameId}</h2>
       </div>
       <div className="flex-grow overflow-y-auto">
@@ -71,6 +76,7 @@ const TableView: React.FC<{
   rows: Row[];
   cellValues: CellValue[];
   onAddRow: (tableId: number) => void;
+  onRandomThrow: () => void;
   onUpdateCellValue: (
     cellValueId: number | null,
     rowId: number,
@@ -86,6 +92,7 @@ const TableView: React.FC<{
   onAddRow,
   onUpdateCellValue,
   onAddColumn,
+  onRandomThrow,
 }) => {
   // Sort columns by order
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
@@ -167,7 +174,7 @@ const TableView: React.FC<{
           </button>
           <button
             type="button"
-            onClick={() => randomThrow(table.id)}
+            onClick={onRandomThrow}
             className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center"
           >
             <Dice5Icon className="h-4 w-4 mr-1" />
@@ -321,6 +328,9 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   const [activeTableId, setActiveTableId] = useState<number | null>(null);
   const [isCreatingTable, setIsCreatingTable] = useState<boolean>(false);
 
+  const [isRandomThrowModalOpen, setIsRandomThrowModalOpen] =
+    useState<boolean>(false);
+
   // Fetch active table if not set
   useEffect(() => {
     if (!activeTableId && tables.length > 0 && !isCreatingTable) {
@@ -352,19 +362,19 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   async function handleCreateTable(
     newTable: Omit<Table, "id">,
-    newColumns: Omit<Column, "id"|"tableId">[]
+    newColumns: Omit<Column, "id" | "tableId">[]
   ) {
     try {
       const table = await createTable({
         name: newTable.name,
         game_id: newTable.gameId,
-        columns: newColumns
+        columns: newColumns,
       });
       const formattedTable = {
-        id:table.id,
-        gameId:table.game_id,
-        name:table.name,
-        columns:table.columns.map((c)=>({...c,tableId:c.table_id}))
+        id: table.id,
+        gameId: table.game_id,
+        name: table.name,
+        columns: table.columns.map((c) => ({ ...c, tableId: c.table_id })),
       };
 
       setTables([...tables, formattedTable]);
@@ -380,6 +390,9 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   async function handleAddRow(tableId: number) {
     // Create a new row
+    if (columns.length === 0) {
+      return;
+    }
     try {
       const { row } = await createRow({ table_id: tableId });
       const formattedRow = {
@@ -478,18 +491,16 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);
-  /*  const activeTableColumns = columns.filter(
-    (col) => col.tableId === activeTableId
-  ); */
-  /*  const activeTableRows = rows
-    ? rows.filter((row) => row.tableId === activeTableId)
-    : []; */
+
   const relevantCellValues = cellValues.filter(
     (cv) =>
       rows?.some((row) => row.id === cv.rowId) &&
       columns.some((col) => col.id === cv.columnId)
   );
 
+  const randomThrow = (id: number) => {
+    setIsRandomThrowModalOpen(true);
+  };
   return (
     <div className="flex h-screen bg-slate-950">
       <TablesSidebar
@@ -521,6 +532,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
             onAddRow={handleAddRow}
             onUpdateCellValue={handleUpdateCellValue}
             onAddColumn={handleAddColumn}
+            onRandomThrow={() => setIsRandomThrowModalOpen(true)}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500">
@@ -528,6 +540,13 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
           </div>
         )}
       </div>
+      <RandomThrowModal
+        isOpen={isRandomThrowModalOpen}
+        onClose={() => setIsRandomThrowModalOpen(false)}
+        columns={columns}
+        rows={rows ?? []}
+        cellValues={relevantCellValues}
+      />
     </div>
   );
 }

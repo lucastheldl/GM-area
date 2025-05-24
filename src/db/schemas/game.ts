@@ -8,7 +8,7 @@ export const gameTable = pgTable("games", {
   name: varchar({ length: 255 }).notNull(),
   user_id: integer()
     .notNull()
-    .references(() => userTable.id),
+    .references(() => userTable.id, { onDelete: "cascade" }),
   createdAt: timestamp().defaultNow(),
 });
 

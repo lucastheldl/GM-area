@@ -64,5 +64,10 @@ export async function createGame(data: any) {
     .values({ ...data, user_id: user.id })
     .returning();
 
-    return {game:{...createdGame[0],tables:[]}}
+  return { game: { ...createdGame[0], tables: [] } };
+}
+export async function deleteGame(id: number) {
+  await db.delete(gameTable).where(eq(gameTable.id, id));
+
+  //TODO: delete columns and rows and values and tables
 }

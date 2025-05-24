@@ -7,7 +7,7 @@ export const columnTable = pgTable("columns", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   table_id: integer()
     .notNull()
-    .references(() => tableTable.id),
+    .references(() => tableTable.id, { onDelete: "cascade" }),
   name: varchar({ length: 255 }).notNull(),
   type: varchar({ length: 50 }).notNull(),
   order: integer().notNull(),

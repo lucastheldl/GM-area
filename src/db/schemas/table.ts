@@ -9,7 +9,7 @@ export const tableTable = pgTable("tables", {
   name: varchar({ length: 255 }).notNull(),
   game_id: integer()
     .notNull()
-    .references(() => gameTable.id),
+    .references(() => gameTable.id, { onDelete: "cascade" }),
 });
 export const tablesRelations = relations(tableTable, ({ one, many }) => ({
   columns: many(columnTable),
