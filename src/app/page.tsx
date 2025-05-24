@@ -80,11 +80,7 @@ const CreateGameModal: React.FC<CreateGameModalProps> = ({
       setGameName("");
       onClose();
     }
-    try {
-      await createGame({ name: gameName });
-    } catch (error) {
-      console.log(error);
-    }
+   
   }
 
   if (!isOpen) return null;
@@ -139,9 +135,15 @@ const GamesPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const handleCreateGame = (gameName: string): void => {
+  async function handleCreateGame  (gameName: string) {
     //create game
-    // setGames([...games, newGame]);
+     try {
+      const {game} = await createGame({ name: gameName });
+       setGames([...games, game]);
+    } catch (error) {
+      console.log(error);
+    }
+    
   };
 
   useEffect(() => {

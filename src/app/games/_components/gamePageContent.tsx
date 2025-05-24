@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Plus, Layers, PlusCircle, Dice5Icon } from "lucide-react";
+import { Plus, Layers, PlusCircle, Dice5Icon, ChevronLeft } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
 import { CreateTableForm } from "../[id]/table-form";
@@ -13,6 +13,7 @@ import {
   createTable,
   getTable,
 } from "@/actions/tables";
+import Link from "next/link";
 
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
@@ -25,8 +26,8 @@ const TablesSidebar: React.FC<{
   return (
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
       <div className="p-4 border-b border-slate-700">
-        <h2 className="text-lg font-bold text-white">Tables</h2>
-        <p className="text-sm text-slate-400">Game #{gameId}</p>
+        <Link href={"/"} className="flex gap-2 items-center text-sm text-slate-400 hover:text-slate-200"><ChevronLeft className="h-4 w-4"/> Back</Link>
+        <h2 className="text-lg font-bold text-white">Game #{gameId}</h2>
       </div>
       <div className="flex-grow overflow-y-auto">
         <ul className="py-2">
@@ -344,40 +345,36 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   const handleCreateTableClick = () => {
     setIsCreatingTable(true);
     setActiveTableId(null);
+    setColumns([]);
+    setRows([]);
+    setCellValues([]);
   };
 
   async function handleCreateTable(
     newTable: Omit<Table, "id">,
-    newColumns: Omit<Column, "id" | "tableId">[]
+    newColumns: Omit<Column, "id"|"tableId">[]
   ) {
     try {
-      const createdTable = await createTable({
+      const table = await createTable({
         name: newTable.name,
         game_id: newTable.gameId,
-        columns: newColumns,
+        columns: newColumns
       });
-      console.log(createdTable);
+      const formattedTable = {
+        id:table.id,
+        gameId:table.game_id,
+        name:table.name,
+        columns:table.columns.map((c)=>({...c,tableId:c.table_id}))
+      };
+
+      setTables([...tables, formattedTable]);
+      setActiveTableId(formattedTable.id);
+      setColumns(formattedTable.columns);
+      setRows([]);
+      setCellValues([]);
     } catch (error) {
       console.log(error);
     }
-
-    // In a real app, this would be an API call
-    // For demo, we'll create mock IDs
-    /*const tableId = Math.max(0, ...tables.map(t => t.id)) + 1;
-    
-    const table = { ...newTable, id: tableId };
-    setTables([...tables, table]);
-    
-    // Create columns for the new table
-    const startColumnId = Math.max(0, ...columns.map(c => c.id)) + 1;
-    const createdColumns = newColumns.map((col, index) => ({
-      ...col,
-      id: startColumnId + index,
-      tableId
-    }));*/
-
-    // setColumns([...columns, ...createdColumns]);
-    // setActiveTableId(tableId);
     setIsCreatingTable(false);
   }
 

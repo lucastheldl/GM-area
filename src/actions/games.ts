@@ -59,8 +59,10 @@ export async function createGame(data: any) {
     throw new Error("User not authenticated");
   }
 
-  await db
+  const createdGame = await db
     .insert(gameTable)
     .values({ ...data, user_id: user.id })
     .returning();
+
+    return {game:{...createdGame[0],tables:[]}}
 }

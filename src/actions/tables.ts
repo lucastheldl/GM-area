@@ -93,10 +93,18 @@ export async function getTable(id: number) {
   table.rows = [...rowsMap.values()];
   return { table };
 }
-export async function createTable(data: any) {
+export async function createTable(data: any,) {
   const table = await db.insert(tableTable).values(data).returning();
 
-  return { table };
+  const columnsWithTableId = data.columns.map((c: any) => ({
+    ...c,
+    table_id: table[0].id,
+  }));
+
+  const columns = await db.insert(columnTable).values(columnsWithTableId).returning();
+
+
+  return { ...table[0],columns:columns };
 }
 
 export async function createColumn(data: any) {
@@ -110,7 +118,7 @@ export async function createRow(data: any) {
 
   return { row };
 }
-export async function createCells(data: NewCellValue[]) {
+export async function createCells(data:Omit<NewCellValue,"id">[]) {
   const cells = await db.insert(cellValues).values(data).returning();
 
   return { cells };
