@@ -17,7 +17,7 @@ interface CellValue {
   value: string;
 }
 
-interface Row {
+interface RowMapType {
   id: number;
   values: Record<number, CellValue>;
 }
@@ -90,11 +90,11 @@ export async function getTable(id: number): Promise<{
     id: firstRow.table_id,
     name: firstRow.table_name,
     columns: [] as Column[],
-    rows: [] as Row[],
+    rows: [] as RowMapType[],
   };
 
   const columnsMap = new Map<number, Column>();
-  const rowsMap = new Map<number, Row>();
+  const rowsMap = new Map<number, RowMapType>();
 
   const cellValues: {
     rowId: number;
