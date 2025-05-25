@@ -10,6 +10,7 @@ import {
   createColumn,
   createRow,
   createTable,
+  editCells,
   getTable,
 } from "@/actions/tables";
 import Link from "next/link";
@@ -149,7 +150,6 @@ const TableView: React.FC<{
       handleCellBlur();
     }
   };
-  const randomThrow = (id: number) => {};
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -340,13 +340,15 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   async function handleTableSelect(tableId: number) {
     try {
-      const { table } = await getTable(tableId);
+      const { table, cellValues } = await getTable(tableId);
 
       setActiveTableId(tableId);
       setIsCreatingTable(false);
 
       setColumns(table.columns);
       setRows(table.rows);
+
+      setCellValues(cellValues);
     } catch (error) {
       console.log("Error when selecting table");
     }
@@ -423,18 +425,23 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     }
   }
 
-  const handleUpdateCellValue = (
+  async function handleUpdateCellValue(
     cellValueId: number | null,
     rowId: number,
     columnId: number,
     value: string
-  ) => {
+  ) {
     // If cell value exists, update it
-    if (cellValueId) {
+    // if (cellValueId) {
+    try {
+      await editCells({ id: cellValueId, value });
       setCellValues(
         cellValues.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
       );
-    } else {
+    } catch (error) {
+      console.log("Error while updating values");
+    }
+    /* } else {
       // Otherwise create a new cell value
       const newCellId = Math.max(0, ...cellValues.map((cv) => cv.id)) + 1;
       setCellValues([
@@ -446,8 +453,8 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
           value,
         },
       ]);
-    }
-  };
+    } */
+  }
 
   async function handleAddColumn(tableId: number, name: string, type: string) {
     // Create new column
@@ -498,9 +505,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       columns.some((col) => col.id === cv.columnId)
   );
 
-  const randomThrow = (id: number) => {
-    setIsRandomThrowModalOpen(true);
-  };
   return (
     <div className="flex h-screen bg-slate-950">
       <TablesSidebar

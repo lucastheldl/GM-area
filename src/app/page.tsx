@@ -6,6 +6,9 @@ import Link from "next/link";
 import { createGame, deleteGame, getUserGames } from "@/actions/games";
 import dayjs from "dayjs";
 import type { Game } from "@/@types";
+import { logout } from "@/actions/users";
+import { getSession } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 interface GameCardProps {
   game: Game;
@@ -141,8 +144,11 @@ const CreateGameModal: React.FC<CreateGameModalProps> = ({
 const GamesPage: React.FC = () => {
   // Sample initial games - in a real app this would come from an API
   const [games, setGames] = useState<Game[]>([]);
+  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const router = useRouter();
 
   async function handleCreateGame(gameName: string) {
     //create game
@@ -162,9 +168,27 @@ const GamesPage: React.FC = () => {
       console.log("Error when deleting a game");
     }
   }
+  async function handleLogOut() {
+    try {
+      await logout();
+      setGames([]);
+      setUser(null);
+    } catch (error) {
+      console.log(error);
+      console.log("Error while logging out");
+    }
+  }
+  async function handleGoToLogin() {
+    router.push("/signin");
+  }
 
   useEffect(() => {
     async function fetchGames() {
+      const sessionCookie = await getSession();
+      if (!sessionCookie) {
+        return;
+      }
+      setUser(sessionCookie);
       const fetchedGames = await getUserGames();
       setGames(fetchedGames.gamesWithTables);
     }
@@ -174,9 +198,35 @@ const GamesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950">
       <div className="container mx-auto p-6">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Your Games</h1>
-          <p className="text-slate-400">Manage and access your RPG campaigns</p>
+        <header className="mb-8 flex justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Your Games</h1>
+            <p className="text-slate-400">
+              Manage and access your RPG campaigns
+            </p>
+          </div>
+          <div>
+            {user ? (
+              <div className="flex gap-2 items-center">
+                <span className="text-slate-400 text-xs ">{user?.email}</span>
+                <button
+                  className="hover:cursor-pointer font-semibold hover:text-slate-400"
+                  type="button"
+                  onClick={handleLogOut}
+                >
+                  Log out
+                </button>
+              </div>
+            ) : (
+              <button
+                className="hover:cursor-pointer font-semibold hover:text-slate-400"
+                type="button"
+                onClick={handleGoToLogin}
+              >
+                Log in
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -2,6 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cellValues, columnTable, rowTable, tableTable } from "@/db/schema";
 import { NewCellValue } from "@/db/schemas/cell-values";
+import { Row } from "@/@types";
 
 interface Column {
   id: number;
@@ -10,6 +11,30 @@ interface Column {
   type: string;
   order: number;
 }
+
+interface CellValue {
+  id: number;
+  value: string;
+}
+
+interface Row {
+  id: number;
+  values: Record<number, CellValue>;
+}
+
+interface RawRow {
+  table_id: number;
+  table_name: string;
+  column_id: number | null;
+  column_name: string | null;
+  column_type: string | null;
+  column_order: number | null;
+  row_id: number | null;
+  cell_value_id: number | null;
+  cell_value: string | null;
+  [key: string]: unknown;
+}
+
 export async function getTablesFromGame(id: number) {
   const tables = await db
     .select()
@@ -18,82 +43,131 @@ export async function getTablesFromGame(id: number) {
 
   return { tables };
 }
-export async function getTable(id: number) {
-  const completeTable = await db.execute(
+export async function getTable(id: number): Promise<{
+  table: {
+    id: number;
+    name: string;
+    columns: Column[];
+    rows: Row[];
+  };
+  cellValues: {
+    rowId: number;
+    columnId: number;
+    id: number;
+    value: string;
+  }[];
+}> {
+  const completeTable = await db.execute<RawRow>(
     sql`SELECT  
-    t.id AS table_id,
-    t.name AS table_name,
-    
-    c.id AS column_id,
-    c.name AS column_name,
-    c.type AS column_type,
-    c.order AS column_order,
-    
-    r.id AS row_id,
-    
-    cv.id AS cell_value_id,
-    cv.value AS cell_value
+      t.id AS table_id,
+      t.name AS table_name,
+      
+      c.id AS column_id,
+      c.name AS column_name,
+      c.type AS column_type,
+      c.order AS column_order,
+      
+      r.id AS row_id,
+      
+      cv.id AS cell_value_id,
+      cv.value AS cell_value
 
-    FROM tables t
-    LEFT JOIN columns c ON c.table_id = t.id 
-    LEFT JOIN rows r ON r.table_id = t.id 
-    LEFT JOIN cell_values cv ON cv.column_id = c.id AND cv.row_id = r.id
-    WHERE t.id = ${id}
+      FROM tables t
+      LEFT JOIN columns c ON c.table_id = t.id 
+      LEFT JOIN rows r ON r.table_id = t.id 
+      LEFT JOIN cell_values cv ON cv.column_id = c.id AND cv.row_id = r.id
+      WHERE t.id = ${id}
 
-    ORDER BY t.id, c.id, r.id;`
+      ORDER BY t.id, c.id, r.id;`
   );
 
+  const firstRow = completeTable.rows[0];
+  if (!firstRow) {
+    throw new Error("Table not found or is empty");
+  }
+
   const table = {
-    id: completeTable.rows[0].table_id,
-    name: completeTable.rows[0].table_name,
+    id: firstRow.table_id,
+    name: firstRow.table_name,
     columns: [] as Column[],
-    rows: [],
+    rows: [] as Row[],
   };
 
-  const columnsMap = new Map();
-  const rowsMap = new Map();
+  const columnsMap = new Map<number, Column>();
+  const rowsMap = new Map<number, Row>();
+
+  const cellValues: {
+    rowId: number;
+    columnId: number;
+    id: number;
+    value: string;
+  }[] = [];
 
   for (const row of completeTable.rows) {
-    // Add column if not already added
-    if (row.column_id !== null && !columnsMap.has(row.column_id)) {
-      columnsMap.set(row.column_id, {
-        id: row.column_id,
-        type: row.column_type,
-        name: row.column_name,
-        order: row.column_order,
+    const {
+      column_id,
+      column_name,
+      column_type,
+      column_order,
+      row_id,
+      cell_value_id,
+      cell_value,
+    } = row;
+
+    // Add column if it exists and hasn't been added yet
+    if (
+      column_id !== null &&
+      column_name !== null &&
+      column_type !== null &&
+      column_order !== null &&
+      !columnsMap.has(column_id)
+    ) {
+      columnsMap.set(column_id, {
+        id: column_id,
+        name: column_name,
+        type: column_type,
+        order: column_order,
+        tableId: row.table_id,
       });
     }
 
-    // Add row if not already added
-    if (row.row_id !== null && !rowsMap.has(row.row_id)) {
-      rowsMap.set(row.row_id, {
-        id: row.row_id,
+    // Add row if it exists and hasn't been added yet
+    if (row_id !== null && !rowsMap.has(row_id)) {
+      rowsMap.set(row_id, {
+        id: row_id,
         values: {},
       });
     }
 
-    // Add cell value
+    // Add cell value to both row.values and flat array
     if (
-      row.row_id !== null &&
-      row.column_id !== null &&
-      row.cell_value_id !== null
+      row_id !== null &&
+      column_id !== null &&
+      cell_value_id !== null &&
+      cell_value !== null
     ) {
-      const rowEntry = rowsMap.get(row.row_id);
-      rowEntry.values[row.column_id] = {
-        id: row.cell_value_id,
-        value: row.cell_value,
+      const rowEntry = rowsMap.get(row_id)!;
+      rowEntry.values[column_id] = {
+        id: cell_value_id,
+        value: cell_value,
       };
+
+      cellValues.push({
+        rowId: row_id,
+        columnId: column_id,
+        id: cell_value_id,
+        value: cell_value,
+      });
     }
   }
 
-  // Assign sorted columns and rows
-  table.columns = [...columnsMap.values()].sort(
-    (a, b) => a.order - b.order
-  ) as Column[];
+  table.columns = [...columnsMap.values()].sort((a, b) => a.order - b.order);
   table.rows = [...rowsMap.values()];
-  return { table };
+
+  return { table, cellValues };
 }
-export async function createTable(data: any,) {
+
+export async function createTable(data: any) {
   const table = await db.insert(tableTable).values(data).returning();
 
   const columnsWithTableId = data.columns.map((c: any) => ({
@@ -101,10 +175,12 @@ export async function createTable(data: any,) {
     table_id: table[0].id,
   }));
 
-  const columns = await db.insert(columnTable).values(columnsWithTableId).returning();
+  const columns = await db
+    .insert(columnTable)
+    .values(columnsWithTableId)
+    .returning();
 
-
-  return { ...table[0],columns:columns };
+  return { ...table[0], columns: columns };
 }
 
 export async function createColumn(data: any) {
@@ -118,8 +194,16 @@ export async function createRow(data: any) {
 
   return { row };
 }
-export async function createCells(data:Omit<NewCellValue,"id">[]) {
+export async function createCells(data: Omit<NewCellValue, "id">[]) {
   const cells = await db.insert(cellValues).values(data).returning();
 
   return { cells };
+}
+export async function editCells(data: any) {
+  const cell = await db
+    .update(cellValues)
+    .set({ value: data.value })
+    .where(eq(cellValues.id, data.id));
+
+  return { cell };
 }
