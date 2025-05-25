@@ -19,6 +19,7 @@ interface CellValue {
 
 interface RowMapType {
   id: number;
+  tableId: number;
   values: Record<number, CellValue>;
 }
 
@@ -135,6 +136,7 @@ export async function getTable(id: number): Promise<{
     if (row_id !== null && !rowsMap.has(row_id)) {
       rowsMap.set(row_id, {
         id: row_id,
+        tableId: row.table_id,
         values: {},
       });
     }
