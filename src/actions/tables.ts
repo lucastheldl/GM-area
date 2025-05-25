@@ -1,8 +1,8 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cellValues, columnTable, rowTable, tableTable } from "@/db/schema";
-import { NewCellValue } from "@/db/schemas/cell-values";
-import { Row } from "@/@types";
+import type { NewCellValue } from "@/db/schemas/cell-values";
+import type { Row as RowType } from "@/@types";
 
 interface Column {
   id: number;
@@ -48,7 +48,7 @@ export async function getTable(id: number): Promise<{
     id: number;
     name: string;
     columns: Column[];
-    rows: Row[];
+    rows: RowType[];
   };
   cellValues: {
     rowId: number;
