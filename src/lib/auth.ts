@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
 
-const JWT_SECRET = process.env.NEXT_PUBLIC_JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET!;
 const encoder = new TextEncoder();
 const secretKey = encoder.encode(JWT_SECRET);
 
