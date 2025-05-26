@@ -23,7 +23,15 @@ const TablesSidebar: React.FC<{
   onTableSelect: (tableId: number) => void;
   onCreateTable: () => void;
   gameId: number;
-}> = ({ tables, activeTableId, onTableSelect, onCreateTable, gameId }) => {
+  setSearch: React.Dispatch<React.SetStateAction<string>>;
+}> = ({
+  tables,
+  activeTableId,
+  onTableSelect,
+  onCreateTable,
+  setSearch,
+  gameId,
+}) => {
   return (
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
       <div className="p-4 border-b border-slate-700">
@@ -34,6 +42,13 @@ const TablesSidebar: React.FC<{
           <ChevronLeft className="h-4 w-4" /> Back
         </Link>
         <h2 className="text-lg font-bold text-white">Game #{gameId}</h2>
+      </div>
+      <div className="py-4 px-4">
+        <input
+          placeholder="Search table..."
+          className="border border-slate-400 rounded-md px-2 py-1"
+          onChange={(e) => setSearch(e.target.value)}
+        />
       </div>
       <div className="flex-grow overflow-y-auto">
         <ul className="py-2">
@@ -321,7 +336,9 @@ type GameEventClientPageProps = {
 export function GameEventClientPage({ game }: GameEventClientPageProps) {
   const [tables, setTables] = useState<Table[]>(game.tables ?? []);
   const [columns, setColumns] = useState<Column[]>([]);
+  const [displayedTables, setDisplayedTables] = useState<Table[]>(tables);
   const [rows, setRows] = useState<Row[]>();
+  const [search, setSearch] = useState("");
 
   const [cellValues, setCellValues] = useState<CellValue[]>([]);
 
@@ -337,6 +354,16 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       setActiveTableId(tables[0].id);
     }
   }, [activeTableId, tables, isCreatingTable]);
+
+  useEffect(() => {
+    if (search !== "") {
+      setDisplayedTables(
+        tables.filter((t) => t.name.toLowerCase().includes(search))
+      );
+    } else {
+      setDisplayedTables(tables);
+    }
+  }, [search, tables]);
 
   async function handleTableSelect(tableId: number) {
     try {
@@ -508,11 +535,12 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   return (
     <div className="flex h-screen bg-slate-950">
       <TablesSidebar
-        tables={tables}
+        tables={displayedTables}
         activeTableId={activeTableId}
         onTableSelect={handleTableSelect}
         onCreateTable={handleCreateTableClick}
         gameId={game.id}
+        setSearch={setSearch}
       />
 
       <div className="flex-grow overflow-auto">
