@@ -10,6 +10,7 @@ import {
   createColumn,
   createRow,
   createTable,
+  deleteColumn,
   editCells,
   getTable,
 } from "@/actions/tables";
@@ -93,6 +94,7 @@ const TableView: React.FC<{
   cellValues: CellValue[];
   onAddRow: (tableId: number) => void;
   onRandomThrow: () => void;
+  handleDeleteColumn:(id:number)=>void;
   onUpdateCellValue: (
     cellValueId: number | null,
     rowId: number,
@@ -109,6 +111,7 @@ const TableView: React.FC<{
   onUpdateCellValue,
   onAddColumn,
   onRandomThrow,
+  handleDeleteColumn
 }) => {
   // Sort columns by order
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
@@ -258,10 +261,11 @@ const TableView: React.FC<{
           <thead>
             <tr className="bg-slate-800">
               {sortedColumns.map((column) => (
-                <th
+                 <th
                   key={column.id}
-                  className="px-4 py-3 text-left text-sm font-medium text-slate-300 border-b border-slate-700"
+                  className="relative group px-4 py-3 text-left text-sm font-medium text-slate-300 border-b border-slate-700"
                 >
+                  <button className="hidden absolute top-1/2 p-1 px-2 -translate-y-1/2 right-2 group-hover:block hover:text-red-600 hover:cursor-pointer" onClick={()=>handleDeleteColumn(column.id)}>X</button>
                   {column.name ?? "Column"}
                   <span className="ml-2 text-xs text-slate-500">
                     {column.type}
@@ -482,6 +486,16 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       ]);
     } */
   }
+  async function handleDeleteColumn(id:number){
+    try {
+      await deleteColumn(id);
+      setCellValues(cellValues.filter((cv)=>cv.columnId != id));
+      setColumns(columns.filter((c)=>c.id != id));
+    } catch (error) {
+      console.log(Error);
+      console.log("Erro while deleting column")
+    }
+  }
 
   async function handleAddColumn(tableId: number, name: string, type: string) {
     // Create new column
@@ -564,6 +578,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
             onAddRow={handleAddRow}
             onUpdateCellValue={handleUpdateCellValue}
             onAddColumn={handleAddColumn}
+            handleDeleteColumn={handleDeleteColumn}
             onRandomThrow={() => setIsRandomThrowModalOpen(true)}
           />
         ) : (

@@ -196,6 +196,11 @@ export async function createRow(data: any) {
 
   return { row };
 }
+export async function deleteColumn(id: number) {
+  await db.delete(columnTable).where(eq(columnTable.id,id));
+
+  
+}
 export async function createCells(data: Omit<NewCellValue, "id">[]) {
   const cells = await db.insert(cellValues).values(data).returning();
 
