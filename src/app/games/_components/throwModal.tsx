@@ -1,7 +1,7 @@
 "use client";
 import type React from "react";
 import { useState, useEffect } from "react";
-import { X, Dice5Icon, RefreshCw } from "lucide-react";
+import { X, Dice5Icon, RefreshCw, Shuffle } from "lucide-react";
 import type { Column, Row, CellValue } from "@/@types";
 
 interface RandomThrowModalProps {
@@ -17,6 +17,12 @@ interface RandomRowResult {
   values: { [columnId: number]: string };
 }
 
+interface MultiRandomResult {
+  values: { [columnId: number]: { value: string; rowId: number } };
+}
+
+type RandomMode = 'single' | 'multi';
+
 export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
   isOpen,
   onClose,
@@ -24,22 +30,20 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
   rows,
   cellValues,
 }) => {
-  const [randomResult, setRandomResult] = useState<RandomRowResult | null>(
-    null
-  );
+  const [randomResult, setRandomResult] = useState<RandomRowResult | null>(null);
+  const [multiRandomResult, setMultiRandomResult] = useState<MultiRandomResult | null>(null);
   const [isRolling, setIsRolling] = useState<boolean>(false);
   const [hasRolled, setHasRolled] = useState<boolean>(false);
+  const [randomMode, setRandomMode] = useState<RandomMode>('single');
 
   // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
       setRandomResult(null);
+      setMultiRandomResult(null);
       setIsRolling(false);
       setHasRolled(false);
-      // Auto-roll when modal opens
-      setTimeout(() => {
-        handleRandomThrow();
-      }, 300);
+      setRandomMode('single');
     }
   }, [isOpen]);
 
@@ -51,8 +55,15 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
     return cell?.value || "";
   };
 
-  // Handle random throw
-  const handleRandomThrow = () => {
+  // Get all non-empty values for a specific column
+  const getColumnValues = (columnId: number): Array<{ value: string; rowId: number }> => {
+    return cellValues
+      .filter(cv => cv.columnId === columnId && cv.value && cv.value.trim() !== "")
+      .map(cv => ({ value: cv.value, rowId: cv.rowId }));
+  };
+
+  // Handle single row random throw
+  const handleSingleRandomThrow = () => {
     if (rows.length === 0) {
       setRandomResult(null);
       setHasRolled(true);
@@ -61,6 +72,7 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
 
     setIsRolling(true);
     setHasRolled(false);
+    setMultiRandomResult(null);
 
     // Simulate rolling animation with multiple random selections
     let rollCount = 0;
@@ -102,6 +114,68 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
     }, 120);
   };
 
+  // Handle multi random throw (one random value from each column)
+  const handleMultiRandomThrow = () => {
+    if (rows.length === 0 || columns.length === 0) {
+      setMultiRandomResult(null);
+      setHasRolled(true);
+      return;
+    }
+
+    setIsRolling(true);
+    setHasRolled(false);
+    setRandomResult(null);
+
+    // Simulate rolling animation
+    let rollCount = 0;
+    const rollInterval = setInterval(() => {
+      const tempValues: { [columnId: number]: { value: string; rowId: number } } = {};
+      
+      columns.forEach((column) => {
+        const columnValues = getColumnValues(column.id);
+        if (columnValues.length > 0) {
+          const randomIndex = Math.floor(Math.random() * columnValues.length);
+          tempValues[column.id] = columnValues[randomIndex];
+        } else {
+          tempValues[column.id] = { value: "", rowId: -1 };
+        }
+      });
+
+      setMultiRandomResult({ values: tempValues });
+
+      rollCount++;
+
+      if (rollCount >= 12) {
+        clearInterval(rollInterval);
+        setIsRolling(false);
+        setHasRolled(true);
+
+        // Final random selection
+        const finalValues: { [columnId: number]: { value: string; rowId: number } } = {};
+        
+        columns.forEach((column) => {
+          const columnValues = getColumnValues(column.id);
+          if (columnValues.length > 0) {
+            const randomIndex = Math.floor(Math.random() * columnValues.length);
+            finalValues[column.id] = columnValues[randomIndex];
+          } else {
+            finalValues[column.id] = { value: "", rowId: -1 };
+          }
+        });
+
+        setMultiRandomResult({ values: finalValues });
+      }
+    }, 120);
+  };
+
+  const handleRandomThrow = () => {
+    if (randomMode === 'single') {
+      handleSingleRandomThrow();
+    } else {
+      handleMultiRandomThrow();
+    }
+  };
+
   if (!isOpen) return null;
 
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
@@ -125,7 +199,7 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
               }`}
             />
             <h3 className="text-lg font-semibold text-white">
-              Random Row Throw
+              Random Throw
             </h3>
           </div>
           <button
@@ -135,6 +209,44 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
           >
             <X className="h-5 w-5" />
           </button>
+        </div>
+
+        {/* Mode Selection */}
+        <div className="p-4 border-b border-slate-700">
+          <div className="flex space-x-1 bg-slate-800 rounded-lg p-1">
+            <button
+              type="button"
+              onClick={() => setRandomMode('single')}
+              disabled={isRolling}
+              className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
+                randomMode === 'single'
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Dice5Icon className="h-4 w-4" />
+              <span>Single Row</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRandomMode('multi')}
+              disabled={isRolling}
+              className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center justify-center space-x-2 ${
+                randomMode === 'multi'
+                  ? 'bg-indigo-600 text-white'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Shuffle className="h-4 w-4" />
+              <span>Multi Random</span>
+            </button>
+          </div>
+          <p className="text-xs text-slate-400 mt-2">
+            {randomMode === 'single' 
+              ? 'Select one complete row randomly'
+              : 'Select one random value from each column across all rows'
+            }
+          </p>
         </div>
 
         {/* Content */}
@@ -149,25 +261,40 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
             ) : isRolling ? (
               <div className="flex items-center justify-center space-x-2 text-yellow-400 py-4">
                 <RefreshCw className="h-5 w-5 animate-spin" />
-                <span className="font-medium">Rolling for random row...</span>
+                <span className="font-medium">
+                  {randomMode === 'single' ? 'Rolling for random row...' : 'Rolling for multi random...'}
+                </span>
               </div>
-            ) : hasRolled && randomResult ? (
+            ) : hasRolled && (randomResult || multiRandomResult) ? (
               <div className="text-indigo-400 mb-4">
-                <p className="font-medium">Random Row Selected!</p>
-                <p className="text-sm text-slate-400">
-                  Row ID: {randomResult.row.id}
+                <p className="font-medium">
+                  {randomMode === 'single' ? 'Random Row Selected!' : 'Multi Random Selection Complete!'}
                 </p>
+                {randomMode === 'single' && randomResult && (
+                  <p className="text-sm text-slate-400">
+                    Row ID: {randomResult.row.id}
+                  </p>
+                )}
               </div>
             ) : (
-              <div className="text-slate-400 py-4">
-                <Dice5Icon className="h-8 w-8 mx-auto mb-2" />
-                <p>Ready to roll...</p>
+              <div className="flex flex-col justify-center items-center text-slate-400 py-4 min-h-[10rem]">
+                {randomMode === 'single' ? (
+                  <>
+                    <Dice5Icon className="h-8 w-8 mx-auto mb-2" />
+                    <p>Ready to roll for single row...</p>
+                  </>
+                ) : (
+                  <>
+                    <Shuffle className="h-8 w-8 mx-auto mb-2" />
+                    <p>Ready to roll for multi random...</p>
+                  </>
+                )}
               </div>
             )}
           </div>
 
           {/* Result Display */}
-          {randomResult && (
+          {(randomResult || multiRandomResult) && (
             <div
               className={`border-2 rounded-lg overflow-hidden ${
                 isRolling
@@ -177,14 +304,25 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
             >
               <div className="bg-slate-800 px-4 py-2 border-b border-slate-700">
                 <h4 className="text-sm font-medium text-slate-300">
-                  Row Values:
+                  {randomMode === 'single' ? 'Row Values:' : 'Multi Random Values:'}
                 </h4>
               </div>
               <div className="p-4">
                 {sortedColumns.length > 0 ? (
                   <div className="space-y-3">
                     {sortedColumns.map((column) => {
-                      const value = randomResult.values[column.id];
+                      let value = "";
+                      let sourceRowId: number | undefined;
+
+                      if (randomMode === 'single' && randomResult) {
+                        value = randomResult.values[column.id];
+                        sourceRowId = randomResult.row.id;
+                      } else if (randomMode === 'multi' && multiRandomResult) {
+                        const multiValue = multiRandomResult.values[column.id];
+                        value = multiValue?.value || "";
+                        sourceRowId = multiValue?.rowId !== -1 ? multiValue?.rowId : undefined;
+                      }
+
                       return (
                         <div
                           key={column.id}
@@ -197,6 +335,11 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
                             <span className="ml-2 text-xs text-slate-500">
                               ({column.type})
                             </span>
+                            {randomMode === 'multi' && sourceRowId && (
+                              <span className="ml-2 text-xs text-slate-600">
+                                from row #{sourceRowId}
+                              </span>
+                            )}
                           </div>
                           <div className="flex-grow text-right">
                             {value ? (
@@ -230,22 +373,22 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
               disabled={isRolling || rows.length === 0}
               className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-700 disabled:cursor-not-allowed rounded text-white font-medium transition-colors flex items-center justify-center space-x-2"
             >
-              <Dice5Icon className="h-4 w-4" />
+              {randomMode === 'single' ? (
+                <Dice5Icon className="h-4 w-4" />
+              ) : (
+                <Shuffle className="h-4 w-4" />
+              )}
               <span>
                 {isRolling
                   ? "Rolling..."
                   : hasRolled
                   ? "Roll Again"
-                  : "Roll Random Row"}
+                  : randomMode === 'single'
+                  ? "Roll Random Row"
+                  : "Multi Random Roll"}
               </span>
             </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-slate-300 font-medium transition-colors"
-            >
-              Close
-            </button>
+           
           </div>
         </div>
       </div>
