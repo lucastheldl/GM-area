@@ -59,7 +59,7 @@ export const RandomThrowModal: React.FC<RandomThrowModalProps> = ({
   const getColumnValues = (columnId: number): Array<{ value: string; rowId: number }> => {
     return cellValues
       .filter(cv => cv.columnId === columnId && cv.value && cv.value.trim() !== "")
-      .map(cv => ({ value: cv.value, rowId: cv.rowId }));
+      .map(cv => ({ value: cv.value as string, rowId: cv.rowId }));
   };
 
   // Handle single row random throw
