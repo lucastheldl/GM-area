@@ -491,6 +491,9 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       await deleteColumn(id);
       setCellValues(cellValues.filter((cv)=>cv.columnId != id));
       setColumns(columns.filter((c)=>c.id != id));
+      if(columns.length <=0){
+        setRows([]);
+      }
     } catch (error) {
       console.log(Error);
       console.log("Erro while deleting column")
