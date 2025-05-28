@@ -11,6 +11,7 @@ import {
   createRow,
   createTable,
   deleteColumn,
+  deleteRows,
   editCells,
   getTable,
 } from "@/actions/tables";
@@ -491,7 +492,8 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       await deleteColumn(id);
       setCellValues(cellValues.filter((cv)=>cv.columnId != id));
       setColumns(columns.filter((c)=>c.id != id));
-      if(columns.length <=0){
+      if(columns.length <=0 && activeTableId){
+        await deleteRows(activeTableId);
         setRows([]);
       }
     } catch (error) {

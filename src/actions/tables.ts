@@ -201,6 +201,9 @@ export async function deleteColumn(id: number) {
 
   
 }
+export async function deleteRows(tableId:number) {
+  await db.delete(rowTable).where(eq(rowTable.table_id,tableId));
+}
 export async function createCells(data: Omit<NewCellValue, "id">[]) {
   const cells = await db.insert(cellValues).values(data).returning();
 
