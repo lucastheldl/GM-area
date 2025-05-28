@@ -492,7 +492,8 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       await deleteColumn(id);
       setCellValues(cellValues.filter((cv)=>cv.columnId != id));
       setColumns(columns.filter((c)=>c.id != id));
-      if(columns.length <=0 && activeTableId){
+      const remainingColumns =columns.filter((c)=>c.id != id);
+      if(remainingColumns.length <=0 && activeTableId){
         await deleteRows(activeTableId);
         setRows([]);
       }
