@@ -505,7 +505,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   async function handleAddColumn(tableId: number, name: string, type: string) {
     // Create new column
-    const columnId = Math.max(0, ...columns.map((c) => c.id)) + 1;
     const tableColumns = columns.filter((col) => col.tableId === tableId);
     const order = tableColumns.length;
 
@@ -523,21 +522,22 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       };
 
       setColumns([...columns, formattedNewColumn]);
-
-      // Create empty cell values for all rows of this table
-      const tableRows = rows
-        ? rows.filter((row) => row.tableId === tableId)
-        : [];
-      const startCellId = Math.max(0, ...cellValues.map((cv) => cv.id)) + 1;
-
-      const newCellValues = tableRows.map((row, index) => ({
-        id: startCellId + index,
-        rowId: row.id,
-        columnId,
+      if(!rows)return;
+      const newCellValues = rows.map((row, index) => ({
+        row_id: row.id,
+        column_id:newColumn.column[0].id,
         value: null,
       }));
+      const {cells} = await createCells(newCellValues);
 
-      setCellValues([...cellValues, ...newCellValues]);
+       const formattedCells = cells.map((c, index) => ({
+        id: c.id,
+        rowId: c.row_id,
+        columnId: c.column_id,
+        value: c.value,
+      }));
+
+      setCellValues([...cellValues, ...formattedCells]);
     } catch (error) {
       console.log("Erro ao criar coluna");
     }
