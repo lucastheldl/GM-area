@@ -1,7 +1,14 @@
 "use client";
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Plus, Layers, PlusCircle, Dice5Icon, ChevronLeft } from "lucide-react";
+import {
+  Plus,
+  Layers,
+  PlusCircle,
+  Dice5Icon,
+  ChevronLeft,
+  Link2,
+} from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
 import { CreateTableForm } from "../[id]/table-form";
@@ -95,7 +102,7 @@ const TableView: React.FC<{
   cellValues: CellValue[];
   onAddRow: (tableId: number) => void;
   onRandomThrow: () => void;
-  handleDeleteColumn:(id:number)=>void;
+  handleDeleteColumn: (id: number) => void;
   onUpdateCellValue: (
     cellValueId: number | null,
     rowId: number,
@@ -112,7 +119,7 @@ const TableView: React.FC<{
   onUpdateCellValue,
   onAddColumn,
   onRandomThrow,
-  handleDeleteColumn
+  handleDeleteColumn,
 }) => {
   // Sort columns by order
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
@@ -163,6 +170,7 @@ const TableView: React.FC<{
       setNewColumnType("text");
     }
   }
+  async function handleGoToCellPage(id: number) {}
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -262,11 +270,16 @@ const TableView: React.FC<{
           <thead>
             <tr className="bg-slate-800">
               {sortedColumns.map((column) => (
-                 <th
+                <th
                   key={column.id}
                   className="relative group px-4 py-3 text-left text-sm font-medium text-slate-300 border-b border-slate-700"
                 >
-                  <button className="hidden absolute top-1/2 p-1 px-2 -translate-y-1/2 right-2 group-hover:block hover:text-red-600 hover:cursor-pointer" onClick={()=>handleDeleteColumn(column.id)}>X</button>
+                  <button
+                    className="hidden absolute top-1/2 p-1 px-2 -translate-y-1/2 right-2 group-hover:block hover:text-red-600 hover:cursor-pointer"
+                    onClick={() => handleDeleteColumn(column.id)}
+                  >
+                    X
+                  </button>
                   {column.name ?? "Column"}
                   <span className="ml-2 text-xs text-slate-500">
                     {column.type}
@@ -301,27 +314,43 @@ const TableView: React.FC<{
                       // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
                       <td
                         key={column.id}
-                        className="px-4 py-3 text-sm text-slate-300 border-r border-slate-800 last:border-r-0"
-                        onClick={() => handleCellClick(row.id, column.id)}
+                        className="group relative px-4 py-3 text-sm text-slate-300 border-r border-slate-800 last:border-r-0"
                       >
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            value={editValue}
-                            onChange={(e) => setEditValue(e.target.value)}
-                            onBlur={handleCellBlur}
-                            onKeyDown={handleKeyDown}
-                            className="w-full py-1 px-2 rounded bg-slate-700 border border-indigo-500 text-white focus:outline-none"
-                          />
-                        ) : (
-                          <div className="min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded">
-                            {cellData.value || (
-                              <span className="text-slate-600 italic">
-                                Click to edit
-                              </span>
+                        <div className="flex justify-between items-center w-full h-full">
+                          <div
+                            className="w-full h-full"
+                            onClick={() => handleCellClick(row.id, column.id)}
+                          >
+                            {isEditing ? (
+                              <input
+                                type="text"
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onBlur={handleCellBlur}
+                                onKeyDown={handleKeyDown}
+                                className="w-full py-1 px-2 rounded bg-slate-700 border border-indigo-500 text-white focus:outline-none"
+                              />
+                            ) : (
+                              <div className="min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded flex-1">
+                                {cellData.value || (
+                                  <span className="text-slate-600 italic">
+                                    Click to edit
+                                  </span>
+                                )}
+                              </div>
                             )}
                           </div>
-                        )}
+                          {cellData.value && (
+                            <button
+                              className="opacity-0 group-hover:opacity-100 hover:text-indigo-500 hover:cursor-pointer ml-2 transition-opacity"
+                              onClick={() =>
+                                handleGoToCellPage(cellData.id || 0)
+                              }
+                            >
+                              <Link2 className="rotate-45" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     );
                   })}
@@ -487,19 +516,19 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       ]);
     } */
   }
-  async function handleDeleteColumn(id:number){
+  async function handleDeleteColumn(id: number) {
     try {
       await deleteColumn(id);
-      setCellValues(cellValues.filter((cv)=>cv.columnId != id));
-      setColumns(columns.filter((c)=>c.id != id));
-      const remainingColumns =columns.filter((c)=>c.id != id);
-      if(remainingColumns.length <=0 && activeTableId){
+      setCellValues(cellValues.filter((cv) => cv.columnId != id));
+      setColumns(columns.filter((c) => c.id != id));
+      const remainingColumns = columns.filter((c) => c.id != id);
+      if (remainingColumns.length <= 0 && activeTableId) {
         await deleteRows(activeTableId);
         setRows([]);
       }
     } catch (error) {
       console.log(Error);
-      console.log("Erro while deleting column")
+      console.log("Erro while deleting column");
     }
   }
 
@@ -522,15 +551,15 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       };
 
       setColumns([...columns, formattedNewColumn]);
-      if(!rows)return;
+      if (!rows) return;
       const newCellValues = rows.map((row, index) => ({
         row_id: row.id,
-        column_id:newColumn.column[0].id,
+        column_id: newColumn.column[0].id,
         value: null,
       }));
-      const {cells} = await createCells(newCellValues);
+      const { cells } = await createCells(newCellValues);
 
-       const formattedCells = cells.map((c, index) => ({
+      const formattedCells = cells.map((c, index) => ({
         id: c.id,
         rowId: c.row_id,
         columnId: c.column_id,
