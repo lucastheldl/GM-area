@@ -469,6 +469,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         row_id: formattedRow.id,
         column_id: col.id,
         value: "",
+        content:"",
       }));
       const { cells } = await createCells(newCellValues);
 
@@ -556,6 +557,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         row_id: row.id,
         column_id: newColumn.column[0].id,
         value: null,
+        content:"",
       }));
       const { cells } = await createCells(newCellValues);
 
