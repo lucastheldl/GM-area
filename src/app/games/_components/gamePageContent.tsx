@@ -460,7 +460,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       const { row } = await createRow({ table_id: tableId });
       const formattedRow = {
         id: row[0].id,
-        tableId: row[0].id,
+        tableId: row[0].table_id,
       };
 
       setRows([...(rows ?? []), formattedRow]);
@@ -527,7 +527,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         setRows([]);
       }
     } catch (error) {
-      console.log(Error);
+      console.log(error);
       console.log("Erro while deleting column");
     }
   }
