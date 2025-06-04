@@ -110,6 +110,7 @@ const TableView: React.FC<{
     value: string
   ) => void;
   onAddColumn: (tableId: number, name: string, type: string) => void;
+  isLoading:boolean
 }> = ({
   table,
   columns,
@@ -120,6 +121,7 @@ const TableView: React.FC<{
   onAddColumn,
   onRandomThrow,
   handleDeleteColumn,
+  isLoading
 }) => {
   // Sort columns by order
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
@@ -144,6 +146,7 @@ const TableView: React.FC<{
   };
 
   const handleCellClick = (rowId: number, columnId: number) => {
+    if(isLoading)return;
     const cellData = getCellValue(rowId, columnId);
     setEditingCell({ rowId, columnId });
     setEditValue(cellData.value || "");
@@ -185,24 +188,27 @@ const TableView: React.FC<{
         <div className="flex space-x-3">
           <button
             type="button"
+            disabled={isLoading}
             onClick={() => onAddRow(table.id)}
-            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white flex items-center"
+            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white flex items-center disabled:opacity-80"
           >
             <PlusCircle className="h-4 w-4 mr-1" />
             Add Row
           </button>
           <button
             type="button"
+              disabled={isLoading}
             onClick={() => setIsAddingColumn(true)}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center"
+            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center disabled:opacity-80"
           >
             <Plus className="h-4 w-4 mr-1" />
             Add Column
           </button>
           <button
             type="button"
+            disabled={isLoading}
             onClick={onRandomThrow}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center"
+            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center disabled:opacity-80"
           >
             <Dice5Icon className="h-4 w-4 mr-1" />
             Random Throw
@@ -373,6 +379,8 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   const [displayedTables, setDisplayedTables] = useState<Table[]>(tables);
   const [rows, setRows] = useState<Row[]>();
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [cellValues, setCellValues] = useState<CellValue[]>([]);
 
@@ -451,72 +459,61 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     setIsCreatingTable(false);
   }
 
-  async function handleAddRow(tableId: number) {
-    // Create a new row
-    if (columns.length === 0) {
-      return;
-    }
-    try {
-      const { row } = await createRow({ table_id: tableId });
-      const formattedRow = {
-        id: row[0].id,
-        tableId: row[0].table_id,
-      };
+ async function handleAddRow(tableId: number) {
+  if (isLoading || columns.length === 0) return;
+  setIsLoading(true);
+  try {
+    const { row } = await createRow({ table_id: tableId });
+    const formattedRow = {
+      id: row[0].id,
+      tableId: row[0].table_id,
+    };
 
-      setRows([...(rows ?? []), formattedRow]);
+    setRows((prev) => [...(prev ?? []), formattedRow]);
 
-      const newCellValues = columns.map((col, index) => ({
-        row_id: formattedRow.id,
-        column_id: col.id,
-        value: "",
-        content:"",
-      }));
-      const { cells } = await createCells(newCellValues);
+    const newCellValues = columns.map((col) => ({
+      row_id: formattedRow.id,
+      column_id: col.id,
+      value: "",
+      content: "",
+    }));
 
-      const formattedCells = cells.map((c, index) => ({
-        id: c.id,
-        rowId: c.row_id,
-        columnId: c.column_id,
-        value: c.value,
-      }));
+    const { cells } = await createCells(newCellValues);
 
-      setCellValues([...cellValues, ...formattedCells]);
-    } catch (error) {
-      console.log(error);
-      console.log("Erro ao adicionar rows");
-    }
+    const formattedCells = cells.map((c) => ({
+      id: c.id,
+      rowId: c.row_id,
+      columnId: c.column_id,
+      value: c.value,
+    }));
+
+    setCellValues((prev) => [...prev, ...formattedCells]);
+  } catch (error) {
+    console.log("Erro ao adicionar rows", error);
+  } finally {
+    setIsLoading(false);
   }
+}
 
-  async function handleUpdateCellValue(
-    cellValueId: number | null,
-    rowId: number,
-    columnId: number,
-    value: string
-  ) {
-    // If cell value exists, update it
-    // if (cellValueId) {
-    try {
-      await editCells({ id: cellValueId, value });
-      setCellValues(
-        cellValues.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
-      );
-    } catch (error) {
-      console.log("Error while updating values");
-    }
-    /* } else {
-      // Otherwise create a new cell value
-      const newCellId = Math.max(0, ...cellValues.map((cv) => cv.id)) + 1;
-      setCellValues([
-        ...cellValues,
-        {
-          id: newCellId,
-          rowId,
-          columnId,
-          value,
-        },
-      ]);
-    } */
+ async function handleUpdateCellValue(
+  cellValueId: number | null,
+  rowId: number,
+  columnId: number,
+  value: string
+) {
+  if (isLoading) return;
+  setIsLoading(true);
+  try {
+    await editCells({ id: cellValueId, value });
+    setCellValues((prev) =>
+      prev.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
+    );
+  } catch (error) {
+    console.log("Error while updating values");
+  } finally {
+    setIsLoading(false);
   }
+}
   async function handleDeleteColumn(id: number) {
     try {
       await deleteColumn(id);
@@ -533,46 +530,54 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     }
   }
 
-  async function handleAddColumn(tableId: number, name: string, type: string) {
-    // Create new column
-    const tableColumns = columns.filter((col) => col.tableId === tableId);
-    const order = tableColumns.length;
+ async function handleAddColumn(tableId: number, name: string, type: string) {
+  if (isLoading) return;
+  setIsLoading(true);
 
-    try {
-      const newColumn = await createColumn({
-        table_id: tableId,
-        name,
-        type,
-        order,
-      });
+  const tableColumns = columns.filter((col) => col.tableId === tableId);
+  const order = tableColumns.length;
 
-      const formattedNewColumn = {
-        ...newColumn.column[0],
-        tableId: newColumn.column[0].table_id,
-      };
+  try {
+    const newColumn = await createColumn({
+      table_id: tableId,
+      name,
+      type,
+      order,
+    });
 
-      setColumns([...columns, formattedNewColumn]);
-      if (!rows) return;
-      const newCellValues = rows.map((row, index) => ({
-        row_id: row.id,
-        column_id: newColumn.column[0].id,
-        value: null,
-        content:"",
-      }));
-      const { cells } = await createCells(newCellValues);
+    const formattedNewColumn = {
+      ...newColumn.column[0],
+      tableId: newColumn.column[0].table_id,
+    };
 
-      const formattedCells = cells.map((c, index) => ({
-        id: c.id,
-        rowId: c.row_id,
-        columnId: c.column_id,
-        value: c.value,
-      }));
+    setColumns((prev) => [...prev, formattedNewColumn]);
 
-      setCellValues([...cellValues, ...formattedCells]);
-    } catch (error) {
-      console.log("Erro ao criar coluna");
-    }
+    if (!rows) return;
+
+    const newCellValues = rows.map((row) => ({
+      row_id: row.id,
+      column_id: newColumn.column[0].id,
+      value: null,
+      content: "",
+    }));
+
+    const { cells } = await createCells(newCellValues);
+
+    const formattedCells = cells.map((c) => ({
+      id: c.id,
+      rowId: c.row_id,
+      columnId: c.column_id,
+      value: c.value,
+    }));
+
+    setCellValues((prev) => [...prev, ...formattedCells]);
+  } catch (error) {
+    console.log("Erro ao criar coluna", error);
+  } finally {
+    setIsLoading(false);
   }
+}
+
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);
@@ -617,6 +622,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
             onAddColumn={handleAddColumn}
             handleDeleteColumn={handleDeleteColumn}
             onRandomThrow={() => setIsRandomThrowModalOpen(true)}
+            isLoading={isLoading}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-slate-500">
