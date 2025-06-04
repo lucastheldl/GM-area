@@ -12,7 +12,7 @@ export const cellValues = pgTable("cell_values", {
     .notNull()
     .references(() => columnTable.id, { onDelete: "cascade" }),
   value: varchar({ length: 2048 }),
-  content: text().default(""),
+ // content: text().default(""),
 });
 export const cellValuesRelations = relations(cellValues, ({ one }) => ({
   column: one(columnTable, {
