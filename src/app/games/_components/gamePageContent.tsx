@@ -8,6 +8,7 @@ import {
   Dice5Icon,
   ChevronLeft,
   Link2,
+  Loader2,
 } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
@@ -110,7 +111,7 @@ const TableView: React.FC<{
     value: string
   ) => void;
   onAddColumn: (tableId: number, name: string, type: string) => void;
-  isLoading:boolean
+  isLoading: boolean;
 }> = ({
   table,
   columns,
@@ -121,11 +122,11 @@ const TableView: React.FC<{
   onAddColumn,
   onRandomThrow,
   handleDeleteColumn,
-  isLoading
+  isLoading,
 }) => {
   // Sort columns by order
   const sortedColumns = [...columns].sort((a, b) => a.order - b.order);
-  const [isAddingColumn, setIsAddingColumn] = useState<boolean>(false);
+  const [isAddingColumnForm, setIsAddingColumnForm] = useState<boolean>(false);
   const [newColumnName, setNewColumnName] = useState<string>("");
   const [newColumnType, setNewColumnType] = useState<string>("text");
   const [editingCell, setEditingCell] = useState<{
@@ -146,7 +147,8 @@ const TableView: React.FC<{
   };
 
   const handleCellClick = (rowId: number, columnId: number) => {
-    if(isLoading){return};
+    if (isLoading) return; // Prevent editing if any operation is in progress
+    
     const cellData = getCellValue(rowId, columnId);
     setEditingCell({ rowId, columnId });
     setEditValue(cellData.value || "");
@@ -168,7 +170,7 @@ const TableView: React.FC<{
   async function handleAddColumn() {
     if (newColumnName.trim()) {
       onAddColumn(table.id, newColumnName, newColumnType);
-      setIsAddingColumn(false);
+      setIsAddingColumnForm(false);
       setNewColumnName("");
       setNewColumnType("text");
     }
@@ -188,27 +190,30 @@ const TableView: React.FC<{
         <div className="flex space-x-3">
           <button
             type="button"
-            disabled={isLoading}
             onClick={() => onAddRow(table.id)}
-            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-white flex items-center disabled:opacity-80"
+            disabled={isLoading}
+            className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded text-white flex items-center transition-colors"
           >
-            <PlusCircle className="h-4 w-4 mr-1" />
-            Add Row
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <PlusCircle className="h-4 w-4 mr-1" />
+            )}
+            {isLoading ? "Loading..." : "Add Row"}
           </button>
           <button
             type="button"
-              disabled={isLoading}
-            onClick={() => setIsAddingColumn(true)}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center disabled:opacity-80"
+            onClick={() => setIsAddingColumnForm(true)}
+            disabled={isLoading}
+            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-600 disabled:cursor-not-allowed rounded text-white flex items-center transition-colors"
           >
             <Plus className="h-4 w-4 mr-1" />
             Add Column
           </button>
           <button
             type="button"
-            disabled={isLoading}
             onClick={onRandomThrow}
-            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center disabled:opacity-80"
+            className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-white flex items-center"
           >
             <Dice5Icon className="h-4 w-4 mr-1" />
             Random Throw
@@ -216,7 +221,7 @@ const TableView: React.FC<{
         </div>
       </div>
 
-      {isAddingColumn && (
+      {isAddingColumnForm && (
         <div className="mb-4 p-4 bg-slate-800 rounded-md border border-slate-700 flex items-end space-x-3">
           <div className="flex-grow">
             <label
@@ -229,7 +234,8 @@ const TableView: React.FC<{
               type="text"
               value={newColumnName}
               onChange={(e) => setNewColumnName(e.target.value)}
-              className="w-full py-2 px-3 rounded-md bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              disabled={isLoading}
+              className="w-full py-2 px-3 rounded-md bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               placeholder="Enter column name"
             />
           </div>
@@ -243,7 +249,8 @@ const TableView: React.FC<{
             <select
               value={newColumnType}
               onChange={(e) => setNewColumnType(e.target.value)}
-              className="w-full py-2 px-3 rounded-md bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              disabled={isLoading}
+              className="w-full py-2 px-3 rounded-md bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {COLUMN_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -255,17 +262,20 @@ const TableView: React.FC<{
           <div className="flex space-x-2">
             <button
               type="button"
-              onClick={() => setIsAddingColumn(false)}
-              className="px-3 py-2 bg-transparent hover:bg-slate-700 rounded text-slate-300"
+              onClick={() => setIsAddingColumnForm(false)}
+              disabled={isLoading}
+              className="px-3 py-2 bg-transparent hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed rounded text-slate-300"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleAddColumn}
-              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 rounded text-white"
+              disabled={isLoading || !newColumnName.trim()}
+              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded text-white flex items-center"
             >
-              Add
+              {isLoading && <Loader2 className="h-4 w-4 mr-1 animate-spin" />}
+              {isLoading ? "Loading..." : "Add"}
             </button>
           </div>
         </div>
@@ -281,8 +291,9 @@ const TableView: React.FC<{
                   className="relative group px-4 py-3 text-left text-sm font-medium text-slate-300 border-b border-slate-700"
                 >
                   <button
-                    className="hidden absolute top-1/2 p-1 px-2 -translate-y-1/2 right-2 group-hover:block hover:text-red-600 hover:cursor-pointer"
+                    className="hidden absolute top-1/2 p-1 px-2 -translate-y-1/2 right-2 group-hover:block hover:text-red-600 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => handleDeleteColumn(column.id)}
+                    disabled={isLoading}
                   >
                     X
                   </button>
@@ -324,7 +335,9 @@ const TableView: React.FC<{
                       >
                         <div className="flex justify-between items-center w-full h-full">
                           <div
-                            className="w-full h-full"
+                            className={`w-full h-full ${
+                              isLoading && !isEditing ? 'opacity-50 cursor-not-allowed' : ''
+                            }`}
                             onClick={() => handleCellClick(row.id, column.id)}
                           >
                             {isEditing ? (
@@ -334,10 +347,13 @@ const TableView: React.FC<{
                                 onChange={(e) => setEditValue(e.target.value)}
                                 onBlur={handleCellBlur}
                                 onKeyDown={handleKeyDown}
-                                className="w-full py-1 px-2 rounded bg-slate-700 border border-indigo-500 text-white focus:outline-none"
+                                disabled={isLoading && !isEditing}
+                                className="w-full py-1 px-2 rounded bg-slate-700 border border-indigo-500 text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                               />
                             ) : (
-                              <div className="min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded flex-1">
+                              <div className={`min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded flex-1 ${
+                                isLoading ? 'cursor-not-allowed hover:bg-transparent' : ''
+                              }`}>
                                 {cellData.value || (
                                   <span className="text-slate-600 italic">
                                     Click to edit
@@ -369,6 +385,7 @@ const TableView: React.FC<{
     </div>
   );
 };
+
 type GameEventClientPageProps = {
   game: Game;
 };
@@ -379,8 +396,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   const [displayedTables, setDisplayedTables] = useState<Table[]>(tables);
   const [rows, setRows] = useState<Row[]>();
   const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
 
   const [cellValues, setCellValues] = useState<CellValue[]>([]);
 
@@ -389,6 +404,9 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
   const [isRandomThrowModalOpen, setIsRandomThrowModalOpen] =
     useState<boolean>(false);
+
+  // Single loading state for all operations
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Fetch active table if not set
   useEffect(() => {
@@ -459,60 +477,64 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     setIsCreatingTable(false);
   }
 
- async function handleAddRow(tableId: number) {
-  if (columns.length === 0) return;
-  setIsLoading(true);
-  try {
-    const { row } = await createRow({ table_id: tableId });
-    const formattedRow = {
-      id: row[0].id,
-      tableId: row[0].table_id,
-    };
+  async function handleAddRow(tableId: number) {
+    if (columns.length === 0) {
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      const { row } = await createRow({ table_id: tableId });
+      const formattedRow = {
+        id: row[0].id,
+        tableId: row[0].table_id,
+      };
 
-    setRows((prev) => [...(prev ?? []), formattedRow]);
+      setRows([...(rows ?? []), formattedRow]);
 
-    const newCellValues = columns.map((col) => ({
-      row_id: formattedRow.id,
-      column_id: col.id,
-      value: "",
-     // content: "",
-    }));
+      const newCellValues = columns.map((col, index) => ({
+        row_id: formattedRow.id,
+        column_id: col.id,
+        value: "",
+        content:"",
+      }));
+      const { cells } = await createCells(newCellValues);
 
-    const { cells } = await createCells(newCellValues);
+      const formattedCells = cells.map((c, index) => ({
+        id: c.id,
+        rowId: c.row_id,
+        columnId: c.column_id,
+        value: c.value,
+      }));
 
-    const formattedCells = cells.map((c) => ({
-      id: c.id,
-      rowId: c.row_id,
-      columnId: c.column_id,
-      value: c.value,
-    }));
-
-    setCellValues((prev) => [...prev, ...formattedCells]);
-  } catch (error) {
-    console.log("Erro ao adicionar rows", error);
-  } finally {
-    setIsLoading(false);
+      setCellValues([...cellValues, ...formattedCells]);
+    } catch (error) {
+      console.log(error);
+      console.log("Erro ao adicionar rows");
+    } finally {
+      setIsLoading(false);
+    }
   }
-}
 
- async function handleUpdateCellValue(
-  cellValueId: number | null,
-  rowId: number,
-  columnId: number,
-  value: string
-) {
-  setIsLoading(true);
-  try {
-    await editCells({ id: cellValueId, value });
-    setCellValues((prev) =>
-      prev.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
-    );
-  } catch (error) {
-    console.log("Error while updating values");
-  } finally {
-    setIsLoading(false);
+  async function handleUpdateCellValue(
+    cellValueId: number | null,
+    rowId: number,
+    columnId: number,
+    value: string
+  ) {
+    setIsLoading(true);
+    try {
+      await editCells({ id: cellValueId, value });
+      setCellValues(
+        cellValues.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
+      );
+    } catch (error) {
+      console.log("Error while updating values");
+    } finally {
+      setIsLoading(false);
+    }
   }
-}
+
   async function handleDeleteColumn(id: number) {
     try {
       await deleteColumn(id);
@@ -529,53 +551,49 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     }
   }
 
- async function handleAddColumn(tableId: number, name: string, type: string) {
-  setIsLoading(true);
+  async function handleAddColumn(tableId: number, name: string, type: string) {
+    const tableColumns = columns.filter((col) => col.tableId === tableId);
+    const order = tableColumns.length;
 
-  const tableColumns = columns.filter((col) => col.tableId === tableId);
-  const order = tableColumns.length;
+    setIsLoading(true);
+    try {
+      const newColumn = await createColumn({
+        table_id: tableId,
+        name,
+        type,
+        order,
+      });
 
-  try {
-    const newColumn = await createColumn({
-      table_id: tableId,
-      name,
-      type,
-      order,
-    });
+      const formattedNewColumn = {
+        ...newColumn.column[0],
+        tableId: newColumn.column[0].table_id,
+      };
 
-    const formattedNewColumn = {
-      ...newColumn.column[0],
-      tableId: newColumn.column[0].table_id,
-    };
+      setColumns([...columns, formattedNewColumn]);
+      if (!rows) return;
+      
+      const newCellValues = rows.map((row, index) => ({
+        row_id: row.id,
+        column_id: newColumn.column[0].id,
+        value: null,
+        content:"",
+      }));
+      const { cells } = await createCells(newCellValues);
 
-    setColumns((prev) => [...prev, formattedNewColumn]);
+      const formattedCells = cells.map((c, index) => ({
+        id: c.id,
+        rowId: c.row_id,
+        columnId: c.column_id,
+        value: c.value,
+      }));
 
-    if (!rows) return;
-
-    const newCellValues = rows.map((row) => ({
-      row_id: row.id,
-      column_id: newColumn.column[0].id,
-      value: null,
-      //content: "",
-    }));
-
-    const { cells } = await createCells(newCellValues);
-
-    const formattedCells = cells.map((c) => ({
-      id: c.id,
-      rowId: c.row_id,
-      columnId: c.column_id,
-      value: c.value,
-    }));
-
-    setCellValues((prev) => [...prev, ...formattedCells]);
-  } catch (error) {
-    console.log("Erro ao criar coluna", error);
-  } finally {
-    setIsLoading(false);
+      setCellValues([...cellValues, ...formattedCells]);
+    } catch (error) {
+      console.log("Erro ao criar coluna");
+    } finally {
+      setIsLoading(false);
+    }
   }
-}
-
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);
