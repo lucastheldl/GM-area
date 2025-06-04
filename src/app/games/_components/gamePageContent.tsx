@@ -146,7 +146,7 @@ const TableView: React.FC<{
   };
 
   const handleCellClick = (rowId: number, columnId: number) => {
-    if(isLoading)return;
+    if(isLoading){return};
     const cellData = getCellValue(rowId, columnId);
     setEditingCell({ rowId, columnId });
     setEditValue(cellData.value || "");
@@ -460,7 +460,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   }
 
  async function handleAddRow(tableId: number) {
-  if (isLoading || columns.length === 0) return;
+  if (columns.length === 0) return;
   setIsLoading(true);
   try {
     const { row } = await createRow({ table_id: tableId });
@@ -501,7 +501,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   columnId: number,
   value: string
 ) {
-  if (isLoading) return;
   setIsLoading(true);
   try {
     await editCells({ id: cellValueId, value });
@@ -531,7 +530,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
   }
 
  async function handleAddColumn(tableId: number, name: string, type: string) {
-  if (isLoading) return;
   setIsLoading(true);
 
   const tableColumns = columns.filter((col) => col.tableId === tableId);
