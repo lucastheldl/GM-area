@@ -184,6 +184,68 @@ export async function createTable(data: any) {
 
   return { ...table[0], columns: columns };
 }
+export async function createImportedTable(data: any) {
+  // Create the table
+  const table = await db.insert(tableTable).values({
+    name: data.name,
+    game_id: data.game_id
+  }).returning();
+
+  const tableId = table[0].id;
+
+  // Create columns with the new table ID
+  const columnsWithTableId = data.columns.map((c: any) => ({
+    name: c.name,
+    type: c.type,
+    order: c.order,
+    table_id: tableId,
+  }));
+
+  const columns = await db
+    .insert(columnTable)
+    .values(columnsWithTableId)
+    .returning();
+
+  // Create a mapping from old column IDs to new column IDs
+  const columnIdMap = new Map<number, number>();
+  data.columns.forEach((originalCol: any, index: number) => {
+    columnIdMap.set(originalCol.id, columns[index].id);
+  });
+
+  // Create rows with the new table ID
+  const rowsWithTableId = data.rows.map((r: any) => ({
+    table_id: tableId,
+  }));
+
+  const rows = await db
+    .insert(rowTable)
+    .values(rowsWithTableId)
+    .returning();
+
+  // Create a mapping from old row IDs to new row IDs
+  const rowIdMap = new Map<number, number>();
+  data.rows.forEach((originalRow: any, index: number) => {
+    rowIdMap.set(originalRow.id, rows[index].id);
+  });
+
+  // Create cell values with the new row and column IDs
+  const cellValuesWithNewIds = data.cellValues.map((cell: any) => ({
+    row_id: rowIdMap.get(cell.rowId),
+    column_id: columnIdMap.get(cell.columnId),
+    value: String(cell.value), 
+  })).filter((cell: any) => cell.row_id && cell.column_id);
+
+  if (cellValuesWithNewIds.length > 0) {
+    await db.insert(cellValues).values(cellValuesWithNewIds);
+  }
+
+  return { 
+    table: table[0], 
+    columns: columns,
+    rows: rows,
+    message: "Table imported successfully"
+  };
+}
 
 export async function createColumn(data: any) {
   const column = await db.insert(columnTable).values(data).returning();

@@ -1,0 +1,915 @@
+{
+  "name": "Encontros Aleatórios na Estrada",
+  "columns": [
+    {
+      "id": 1,
+      "name": "Descrição",
+      "type": "text",
+      "order": 0
+    }
+  ],
+  "rows": [
+    { "id": 1 },
+    { "id": 2 },
+    { "id": 3 },
+    { "id": 4 },
+    { "id": 5 },
+    { "id": 6 },
+    { "id": 7 },
+    { "id": 8 },
+    { "id": 9 },
+    { "id": 10 },
+    { "id": 11 },
+    { "id": 12 },
+    { "id": 13 },
+    { "id": 14 },
+    { "id": 15 },
+    { "id": 16 },
+    { "id": 17 },
+    { "id": 18 },
+    { "id": 19 },
+    { "id": 20 },
+    { "id": 21 },
+    { "id": 22 },
+    { "id": 23 },
+    { "id": 24 },
+    { "id": 25 },
+    { "id": 26 },
+    { "id": 27 },
+    { "id": 28 },
+    { "id": 29 },
+    { "id": 30 },
+    { "id": 31 },
+    { "id": 32 },
+    { "id": 33 },
+    { "id": 34 },
+    { "id": 35 },
+    { "id": 36 },
+    { "id": 37 },
+    { "id": 38 },
+    { "id": 39 },
+    { "id": 40 },
+    { "id": 41 },
+    { "id": 42 },
+    { "id": 43 },
+    { "id": 44 },
+    { "id": 45 },
+    { "id": 46 },
+    { "id": 47 },
+    { "id": 48 },
+    { "id": 49 },
+    { "id": 50 },
+    { "id": 51 },
+    { "id": 52 },
+    { "id": 53 },
+    { "id": 54 },
+    { "id": 55 },
+    { "id": 56 },
+    { "id": 57 },
+    { "id": 58 },
+    { "id": 59 },
+    { "id": 60 },
+    { "id": 61 },
+    { "id": 62 },
+    { "id": 63 },
+    { "id": 64 },
+    { "id": 65 },
+    { "id": 66 },
+    { "id": 67 },
+    { "id": 68 },
+    { "id": 69 },
+    { "id": 70 },
+    { "id": 71 },
+    { "id": 72 },
+    { "id": 73 },
+    { "id": 74 },
+    { "id": 75 },
+    { "id": 76 },
+    { "id": 77 },
+    { "id": 78 },
+    { "id": 79 },
+    { "id": 80 },
+    { "id": 81 },
+    { "id": 82 },
+    { "id": 83 },
+    { "id": 84 },
+    { "id": 85 },
+    { "id": 86 },
+    { "id": 87 },
+    { "id": 88 },
+    { "id": 89 },
+    { "id": 90 },
+    { "id": 91 },
+    { "id": 92 },
+    { "id": 93 },
+    { "id": 94 },
+    { "id": 95 },
+    { "id": 96 },
+    { "id": 97 },
+    { "id": 98 },
+    { "id": 99 },
+    { "id": 100 },
+    { "id": 101 },
+    { "id": 102 },
+    { "id": 103 },
+    { "id": 104 },
+    { "id": 105 },
+    { "id": 106 },
+    { "id": 107 },
+    { "id": 108 },
+    { "id": 109 },
+    { "id": 110 },
+    { "id": 111 },
+    { "id": 112 },
+    { "id": 113 },
+    { "id": 114 },
+    { "id": 115 },
+    { "id": 116 },
+    { "id": 117 },
+    { "id": 118 },
+    { "id": 119 },
+    { "id": 120 },
+    { "id": 121 },
+    { "id": 122 },
+    { "id": 123 },
+    { "id": 124 },
+    { "id": 125 },
+    { "id": 126 },
+    { "id": 127 },
+    { "id": 128 },
+    { "id": 129 },
+    { "id": 130 },
+    { "id": 131 },
+    { "id": 132 },
+    { "id": 133 },
+    { "id": 134 },
+    { "id": 135 },
+    { "id": 136 },
+    { "id": 137 },
+    { "id": 138 },
+    { "id": 139 },
+    { "id": 140 },
+    { "id": 141 },
+    { "id": 142 },
+    { "id": 143 },
+    { "id": 144 },
+    { "id": 145 },
+    { "id": 146 },
+    { "id": 147 },
+    { "id": 148 },
+    { "id": 149 },
+    { "id": 150 }
+  ],
+  "cellValues": [
+    {
+      "rowId": 1,
+      "columnId": 1,
+      "value": "Os jogadores encontram um grupo de aventureiros mais experientes indo na direção oposta. Se os jogadores forem educados, ganham algumas poções de cura."
+    },
+    {
+      "rowId": 2,
+      "columnId": 1,
+      "value": "Um gnomo nu corre pela trilha, ofega ao ver o grupo, depois foge. Não pode ser perseguido."
+    },
+    {
+      "rowId": 3,
+      "columnId": 1,
+      "value": "Um trovão ecoa (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 4,
+      "columnId": 1,
+      "value": "Um cão preto cruza a trilha (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 5,
+      "columnId": 1,
+      "value": "Uma flor amarela solitária cresce no meio da trilha (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 6,
+      "columnId": 1,
+      "value": "Uma sombra passa sobre o grupo (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 7,
+      "columnId": 1,
+      "value": "Uma poça de sangue (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 8,
+      "columnId": 1,
+      "value": "A terra treme brevemente (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 9,
+      "columnId": 1,
+      "value": "O sol irrompe através de um céu nublado (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 10,
+      "columnId": 1,
+      "value": "Um belo cavalo branco passa correndo pelo grupo e desaparece (presságio para os jogadores interpretarem como desejarem)."
+    },
+    {
+      "rowId": 11,
+      "columnId": 1,
+      "value": "Os jogadores encontram um acampamento de humanos bem armados e amigáveis. Podem passar a noite aqui e evitar um encontro aleatório durante a noite."
+    },
+    {
+      "rowId": 12,
+      "columnId": 1,
+      "value": "Um anão cai do céu e se espatifa na frente do grupo. Nenhuma fonte lógica do anão pode ser vista."
+    },
+    {
+      "rowId": 13,
+      "columnId": 1,
+      "value": "Um jogador (quem fizer a rolagem) tropeça, sofrendo 1d4 de dano contundente."
+    },
+    {
+      "rowId": 14,
+      "columnId": 1,
+      "value": "Um estranho pede para ser escoltado até uma cidade, mas não dá nada ao grupo por fazer isso."
+    },
+    {
+      "rowId": 15,
+      "columnId": 1,
+      "value": "O grupo encontra pegadas de lobos cruzando a trilha (CD 10 Natureza/Sobrevivência)."
+    },
+    {
+      "rowId": 16,
+      "columnId": 1,
+      "value": "Um batedor local dá direções ao grupo para seu próximo destino, mas ele é um idiota que os manda pelo caminho errado. Aumenta o comprimento da jornada."
+    },
+    {
+      "rowId": 17,
+      "columnId": 1,
+      "value": "Uma flecha atinge uma árvore próxima, com uma nota anexada. A nota diz 'Você é um tolo por olhar!' Nenhuma fonte da flecha pode ser encontrada."
+    },
+    {
+      "rowId": 18,
+      "columnId": 1,
+      "value": "Um besouro rola-bosta empurra uma bola pela estrada. Se perturbado, explode em fumaça, causando 1d4 de dano venenoso e deixando o membro do grupo envenenado."
+    },
+    {
+      "rowId": 19,
+      "columnId": 1,
+      "value": "Uma chave misteriosa é encontrada na estrada. Se usada em uma porta trancada, role 1d20. Um 20 destravará a porta, após o que a chave é perdida."
+    },
+    {
+      "rowId": 20,
+      "columnId": 1,
+      "value": "Uma névoa espessa impede a viagem pelo resto do dia."
+    },
+    {
+      "rowId": 21,
+      "columnId": 1,
+      "value": "Vocês estavam viajando na direção errada. Adicione um dia de viagem à sua jornada."
+    },
+    {
+      "rowId": 22,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de descanso. Perde todos os debuffs."
+    },
+    {
+      "rowId": 23,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de boa saúde. Ganha 1d8 pontos de vida temporários."
+    },
+    {
+      "rowId": 24,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção heroica. 1d6 membros do grupo ganham inspiração."
+    },
+    {
+      "rowId": 25,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de miséria. Todos os membros do grupo com inspiração a perdem."
+    },
+    {
+      "rowId": 26,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de batalha. O próximo encontro de combate concede recompensa dupla de XP."
+    },
+    {
+      "rowId": 27,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de cura. Recupera até metade dos seus PV máximos."
+    },
+    {
+      "rowId": 28,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de dor. Perde 1d8 PV (depois que o bardo já passou há muito tempo)."
+    },
+    {
+      "rowId": 29,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção de tempestades. Uma tempestade começa e força o grupo a parar pelo resto do dia."
+    },
+    {
+      "rowId": 30,
+      "columnId": 1,
+      "value": "Um bardo canta uma canção. Nada especial acontece."
+    },
+    {
+      "rowId": 31,
+      "columnId": 1,
+      "value": "Mercador - O único item útil à venda é uma poção de vitalidade, 25 po."
+    },
+    {
+      "rowId": 32,
+      "columnId": 1,
+      "value": "Mercador - Armadura de couro batachado e armas básicas à venda."
+    },
+    {
+      "rowId": 33,
+      "columnId": 1,
+      "value": "Mercador - Cinco poções de cura à venda, 30 po cada."
+    },
+    {
+      "rowId": 34,
+      "columnId": 1,
+      "value": "Mercador - Equipamentos básicos de aventura à venda."
+    },
+    {
+      "rowId": 35,
+      "columnId": 1,
+      "value": "Mercador - Madeira à venda."
+    },
+    {
+      "rowId": 36,
+      "columnId": 1,
+      "value": "Mercador - Caçador oferece carne fresca e algumas ervas."
+    },
+    {
+      "rowId": 37,
+      "columnId": 1,
+      "value": "Mercador - Herbalista (pode dar direções)."
+    },
+    {
+      "rowId": 38,
+      "columnId": 1,
+      "value": "Mercador - Pescador."
+    },
+    {
+      "rowId": 39,
+      "columnId": 1,
+      "value": "Mercador - Comerciante de gemas e joias (500 po em mercadorias)."
+    },
+    {
+      "rowId": 40,
+      "columnId": 1,
+      "value": "Mercador - Coletor de insetos. Um teste de Natureza CD 15 revela uma cartomoth, que mostrará um atalho se libertada. 10 po."
+    },
+    {
+      "rowId": 41,
+      "columnId": 1,
+      "value": "O grupo alcança e ultrapassa um fazendeiro que viaja devagar, brigando com sua esposa. Eles não sabem nada útil."
+    },
+    {
+      "rowId": 42,
+      "columnId": 1,
+      "value": "Há um coro incomumente vocal de pássaros cantando. Druidas, Caçadores e Clérigos ganham inspiração."
+    },
+    {
+      "rowId": 43,
+      "columnId": 1,
+      "value": "Um estranho pede direções ao grupo para a última cidade que deixaram. Se o ajudarem, ele lhes dá 1d6x10 moedas de ouro quando aparecerem na cidade, se isso acontecer."
+    },
+    {
+      "rowId": 44,
+      "columnId": 1,
+      "value": "Uma fileira de cabeças de goblins em estacas alinha a estrada. Uma placa escrita em Goblin ao lado delas diz 'Traidores de Yeemik'."
+    },
+    {
+      "rowId": 45,
+      "columnId": 1,
+      "value": "Um homem está preso sob um tronco. Se o grupo o ajudar, ele desaparece - era uma ilusão."
+    },
+    {
+      "rowId": 46,
+      "columnId": 1,
+      "value": "O grupo encontra uma espada na pedra. Um teste de Força CD 15 a puxa para fora. É uma Espada Longa +1."
+    },
+    {
+      "rowId": 47,
+      "columnId": 1,
+      "value": "Uma menina vendedora de flores pula pela trilha em direção ao grupo, mas desaparece antes de alcançá-los."
+    },
+    {
+      "rowId": 48,
+      "columnId": 1,
+      "value": "O grupo encontra um sacerdote velho e um jovem, que oferecem uma bênção. O grupo tem vantagem em ataques contra mortos-vivos até o próximo descanso longo."
+    },
+    {
+      "rowId": 49,
+      "columnId": 1,
+      "value": "Um templo é encontrado. Role 1d6 para determinar a qual dos seis deuses abaixo é dedicado."
+    },
+    {
+      "rowId": 50,
+      "columnId": 1,
+      "value": "Santuário de Tymora - Se o grupo fizer uma oferenda, todos ganham inspiração."
+    },
+    {
+      "rowId": 51,
+      "columnId": 1,
+      "value": "Santuário de Chauntea - Se o grupo fizer uma oferenda, o resto do dia não tem encontros violentos."
+    },
+    {
+      "rowId": 52,
+      "columnId": 1,
+      "value": "Santuário de Mask - Se o grupo fizer uma oferenda, ganham uma rodada surpresa no próximo encontro."
+    },
+    {
+      "rowId": 53,
+      "columnId": 1,
+      "value": "Santuário de Mystra - Se o grupo fizer uma oferenda, todos os espaços de magia são recuperados."
+    },
+    {
+      "rowId": 54,
+      "columnId": 1,
+      "value": "Santuário de Oghma - Se o grupo fizer uma oferenda, encontram um atalho que reduz a jornada em 1d4 encontros."
+    },
+    {
+      "rowId": 55,
+      "columnId": 1,
+      "value": "Santuário de Waukeen - Se o grupo fizer uma oferenda, mais tarde encontram a quantia oferecida em cada um de seus bolsos."
+    },
+    {
+      "rowId": 56,
+      "columnId": 1,
+      "value": "Santuário abandonado e não identificável - Se o grupo não fizer uma oferenda, acionam um encontro de combate."
+    },
+    {
+      "rowId": 57,
+      "columnId": 1,
+      "value": "Santuário aos espíritos da natureza - Se o grupo não fizer uma oferenda, uma grande tempestade os impede de viajar mais naquele dia."
+    },
+    {
+      "rowId": 58,
+      "columnId": 1,
+      "value": "Santuário demoníaco, coberto de sangue - Se o grupo fizer uma oferenda, acionam um encontro de combate."
+    },
+    {
+      "rowId": 59,
+      "columnId": 1,
+      "value": "Santuário de Bhaal, destruído - Nada acontece."
+    },
+    {
+      "rowId": 60,
+      "columnId": 1,
+      "value": "Entrada para evento 61-70 (É uma armadilha!)"
+    },
+    {
+      "rowId": 61,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Destreza CD 10 ou 1d6 de dano contundente, cova."
+    },
+    {
+      "rowId": 62,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Destreza CD 15 ou 1d8 de dano contundente, cova."
+    },
+    {
+      "rowId": 63,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Destreza CD 20 ou 1d12 de dano contundente, cova."
+    },
+    {
+      "rowId": 64,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Percepção CD 10 ou enredado, 1d6 de dano contundente se cortado sem considerar o pouso."
+    },
+    {
+      "rowId": 65,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Percepção CD 15 ou enredado, 1d6 de dano contundente se cortado sem considerar o pouso."
+    },
+    {
+      "rowId": 66,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Percepção CD 20 ou enredado, 1d6 de dano contundente se cortado sem considerar o pouso."
+    },
+    {
+      "rowId": 67,
+      "columnId": 1,
+      "value": "Armadilha - Teste de Percepção CD 15 ou todo o grupo é enredado por uma rede, role encontro de combate."
+    },
+    {
+      "rowId": 68,
+      "columnId": 1,
+      "value": "Armadilha - Um bolinho está no meio da estrada. Se o grupo se aproximar, aciona uma cova com espinhos. 3d6 de dano perfurante."
+    },
+    {
+      "rowId": 69,
+      "columnId": 1,
+      "value": "Armadilha - Runa mágica (CD 15 Percepção para detectar) ativa, paralisando o grupo. Role para encontro de combate."
+    },
+    {
+      "rowId": 70,
+      "columnId": 1,
+      "value": "Armadilha - Porta no meio da trilha. Se aberta, um Hobgoblin está do outro lado e consegue um ataque surpresa. Se contornada, o Hobgoblin foge."
+    },
+    {
+      "rowId": 71,
+      "columnId": 1,
+      "value": "Charada do velho - 'Tenho cauda, mas não corpo. Tenho cabeça, mas não cérebro. O que sou?' (moedas, recompensa de 50 po)"
+    },
+    {
+      "rowId": 72,
+      "columnId": 1,
+      "value": "Charada do velho - 'O que corre ao redor de Águas Profundas, mas nunca se move de verdade?' (A muralha, poção de cura por jogador)"
+    },
+    {
+      "rowId": 73,
+      "columnId": 1,
+      "value": "Charada do velho - 'Meus rios são secos, minhas florestas não têm árvores, minhas cidades são planas e vazias, e minhas estradas não podem ser caminhadas. O que sou?' (Um mapa. A jornada do grupo é encurtada)"
+    },
+    {
+      "rowId": 74,
+      "columnId": 1,
+      "value": "Charada do velho - 'Dois corpos tenho, embora unidos em um. Quanto mais parado fico, mais rápido corro. O que sou?' (Uma ampulheta. O tempo desacelera se acertarem, pula imediatamente para a noite se errarem)"
+    },
+    {
+      "rowId": 75,
+      "columnId": 1,
+      "value": "Charada do velho - 'Que tipo de orelha não consegue ouvir?' (Uma espiga de milho. Poção de Cura do Silêncio, todos ensurdecidos se não acertarem)"
+    },
+    {
+      "rowId": 76,
+      "columnId": 1,
+      "value": "Charada do velho - 'O que tem quatro rodas e voa?' (Uma carroça de lixo. Poção de voo se correto, atacados por Stirges se não acertarem)"
+    },
+    {
+      "rowId": 77,
+      "columnId": 1,
+      "value": "Um teste de Percepção CD 10 avista um pequeno baú escondido numa árvore. Contém um anel de ouro valendo 20 po."
+    },
+    {
+      "rowId": 78,
+      "columnId": 1,
+      "value": "Um teste de Percepção CD 15 avista um pequeno baú escondido numa árvore. Contém 44 po."
+    },
+    {
+      "rowId": 79,
+      "columnId": 1,
+      "value": "Um teste de Percepção CD 20 avista um baú escondido numa árvore. Contém uma Espada Curta +1."
+    },
+    {
+      "rowId": 80,
+      "columnId": 1,
+      "value": "Um teste de Percepção CD 10 avista um pequeno baú escondido numa árvore. Contém um rato morto."
+    },
+    {
+      "rowId": 81,
+      "columnId": 1,
+      "value": "Uma forte tempestade se forma."
+    },
+    {
+      "rowId": 82,
+      "columnId": 1,
+      "value": "O grupo encontra uma vaca aleatória. Nenhuma investigação revela algo significativo sobre a vaca ou de onde veio."
+    },
+    {
+      "rowId": 83,
+      "columnId": 1,
+      "value": "Um estranho pede para ser escoltado até a cidade mais próxima. Se o grupo concordar, o estranho lhes dá 100 po na entrega."
+    },
+    {
+      "rowId": 84,
+      "columnId": 1,
+      "value": "Um grupo de gnomos empolgados pula pelo grupo. Se o grupo for educado com eles, um dá uma quinquilharia inútil que faz ruído de pássaro quando enrolada."
+    },
+    {
+      "rowId": 85,
+      "columnId": 1,
+      "value": "Um homem está preso sob um tronco. Se o grupo o ajudar, faça um teste CD 15. Uma falha derruba o tronco e esmaga o homem. Ele não tem nada de valor, mas o salvador ganha inspiração se tiver sucesso."
+    },
+    {
+      "rowId": 86,
+      "columnId": 1,
+      "value": "Um homem está enterrado na estrada até o pescoço, com o chão ao redor intocado. Se o grupo o ajudar, a cabeça salta do chão e rasteja com pernas de aranha, gargalhando. O grupo faz um teste de resistência de Sabedoria CD 14, sofrendo 1d10 de dano psíquico em caso de falha."
+    },
+    {
+      "rowId": 87,
+      "columnId": 1,
+      "value": "Um dragão enorme voa sobre suas cabeças."
+    },
+    {
+      "rowId": 88,
+      "columnId": 1,
+      "value": "Um teste de Percepção CD 10 avista caltrops no chão que causam 1d4 de dano perfurante ao grupo se não os avistarem."
+    },
+    {
+      "rowId": 89,
+      "columnId": 1,
+      "value": "Uma anã bêbada desafia o membro do grupo de aparência mais forte para uma luta de braço. Um teste de Força CD 15 a vence, e ela dá 5 po ao membro do grupo. O membro ganha um nível de exaustão em caso de falha."
+    },
+    {
+      "rowId": 90,
+      "columnId": 1,
+      "value": "Uma placa de estrada aponta de volta para onde o grupo veio, mas é inútil."
+    },
+    {
+      "rowId": 91,
+      "columnId": 1,
+      "value": "Um andarilho pede comida. Nada acontece se derem algo a ele."
+    },
+    {
+      "rowId": 92,
+      "columnId": 1,
+      "value": "Um andarilho pede dinheiro. Nada acontece se derem algo a ele."
+    },
+    {
+      "rowId": 93,
+      "columnId": 1,
+      "value": "Um andarilho pede dinheiro. Eles recebem o triplo do que derem se derem algo a ele."
+    },
+    {
+      "rowId": 94,
+      "columnId": 1,
+      "value": "O grupo encontra pegadas de um Urso-coruja cruzando a estrada (CD 10 Natureza/Sobrevivência)."
+    },
+    {
+      "rowId": 95,
+      "columnId": 1,
+      "value": "Um batedor local dá direções ao grupo para seu próximo destino, encurtando sua jornada."
+    },
+    {
+      "rowId": 96,
+      "columnId": 1,
+      "value": "Uma imagem espelho do grupo caminha em direção a eles, mas desaparece antes de alcançá-los."
+    },
+    {
+      "rowId": 97,
+      "columnId": 1,
+      "value": "O grupo percebe que está sendo seguido por um arbusto, que corre para a floresta quando tentam investigar. Se perseguirem, encontram um goblin que joga uma moeda de ouro neles para fazê-los ir embora."
+    },
+    {
+      "rowId": 98,
+      "columnId": 1,
+      "value": "Um estranho na estrada diz a cada personagem para se arrepender de seus pecados. Ele conhece detalhes."
+    },
+    {
+      "rowId": 99,
+      "columnId": 1,
+      "value": "Uma porta está no meio da estrada. Se aberta, a moldura explode com confete, depois desaparece."
+    },
+    {
+      "rowId": 100,
+      "columnId": 1,
+      "value": "O grupo encontra 100 po em um baú no meio da estrada."
+    },
+    {
+      "rowId": 101,
+      "columnId": 1,
+      "value": "Uma borboleta gigante com asas de vitral pousa no ombro do líder do grupo. Se tratada com gentileza, suas asas brilham e concedem vantagem no próximo teste de Carisma."
+    },
+    {
+      "rowId": 102,
+      "columnId": 1,
+      "value": "O grupo encontra uma estátua de pedra de um aventureiro com expressão aterrorizada. Se tocada, ecoa fracamente 'Não olhem para trás...' Nada os segue."
+    },
+    {
+      "rowId": 103,
+      "columnId": 1,
+      "value": "Uma chuva de pétalas coloridas cai do céu por 10 minutos. Todos que estiverem na chuva removem uma condição negativa menor."
+    },
+    {
+      "rowId": 104,
+      "columnId": 1,
+      "value": "O grupo encontra um espelho ornamentado no meio da trilha. Cada pessoa vê uma versão idealizada de si mesma por 24 horas - ganham +1 em testes de Carisma."
+    },
+    {
+      "rowId": 105,
+      "columnId": 1,
+      "value": "Uma raposa azul com três caudas observa o grupo à distância. Se seguida, leva a um tesouro escondido (1d4 x 25 po), mas desaparece se abordada diretamente."
+    },
+    {
+      "rowId": 106,
+      "columnId": 1,
+      "value": "O grupo encontra um poço dos desejos. Jogando uma moeda e fazendo um pedido simples, role 1d20. 15+ e o desejo se realiza de forma inesperada no próximo dia."
+    },
+    {
+      "rowId": 107,
+      "columnId": 1,
+      "value": "Uma antiga árvore sussura segredos em Élfico. Quem entender ganha conhecimento sobre um perigo próximo, concedendo vantagem no próximo teste de Percepção."
+    },
+    {
+      "rowId": 108,
+      "columnId": 1,
+      "value": "O cheiro de pão fresco flutua no ar. Seguindo-o, encontram uma pequena cabana que desaparece ao amanhecer, mas deixa uma cesta com comida suficiente para 3 dias."
+    },
+    {
+      "rowId": 109,
+      "columnId": 1,
+      "value": "Uma procissão fantasmagórica de nobres medievais cruza a estrada. Se o grupo se curvar respeitosamente, um dos fantasmas deixa cair uma joia valiosa (50 po)."
+    },
+    {
+      "rowId": 110,
+      "columnId": 1,
+      "value": "O grupo encontra um círculo de cogumelos luminosos. Pisando dentro, experimentam visões de eventos futuros próximos por 1 minuto (DM pode dar dicas sobre encontros vindouros)."
+    },
+    {
+      "rowId": 111,
+      "columnId": 1,
+      "value": "Um gato preto com olhos dourados bloqueia o caminho, mas só sai se alguém contar uma piada. Se a piada for boa (critério do DM), o gato presenteia uma poção menor."
+    },
+    {
+      "rowId": 112,
+      "columnId": 1,
+      "value": "Gravuras rupestres antigas começam a brilhar quando o grupo se aproxima. Mostram um mapa da região com um X marcando um local - 50% de chance de ser tesouro ou perigo."
+    },
+    {
+      "rowId": 113,
+      "columnId": 1,
+      "value": "O grupo encontra uma estátua de um dragão chorando lágrimas de cristal. Cada lágrima coletada pode ser usada como componente material para magias de nível 1-2."
+    },
+    {
+      "rowId": 114,
+      "columnId": 1,
+      "value": "Uma névoa mágica envolve o grupo. Quando se dissipa, todos descobrem que trocaram de classe por 1 hora (mantêm HP e atributos, mas ganham habilidades básicas da nova classe)."
+    },
+    {
+      "rowId": 115,
+      "columnId": 1,
+      "value": "O som de uma harpa etérea toca ao longe. Seguindo a música, encontram os restos de um bardo élfico com uma harpa mágica ainda funcional (+1 para testes de Performance)."
+    },
+    {
+      "rowId": 116,
+      "columnId": 1,
+      "value": "Uma torre de marfim aparece à distância, mas sempre parece estar à mesma distância não importa quanto caminhem em sua direção. Desaparece ao pôr do sol."
+    },
+    {
+      "rowId": 117,
+      "columnId": 1,
+      "value": "O grupo encontra um livro flutuando no ar, escrevendo sozinho. Se alguém ler por cima do ombro, ganha proficiência temporária em uma habilidade aleatória por 24 horas."
+    },
+    {
+      "rowId": 118,
+      "columnId": 1,
+      "value": "Um vendedor de sonhos (halfling idoso) oferece trocar pesadelos por sonhos dourados. Quem aceitar remove uma falha e ganha vantagem em testes de Sabedoria por 3 dias."
+    },
+    {
+      "rowId": 119,
+      "columnId": 1,
+      "value": "O grupo encontra pegadas que levam para cima, subindo pelo ar. Seguindo-as com sucesso (CD 15 Atletismo), encontram um baú flutuante com 2d6 x 10 po."
+    },
+    {
+      "rowId": 120,
+      "columnId": 1,
+      "value": "Uma chuva de estrelas cadentes ocorre em plena luz do dia. Fazendo um pedido, cada membro ganha um 'reroll' que pode usar na próxima falha crítica."
+    },
+    {
+      "rowId": 121,
+      "columnId": 1,
+      "value": "O grupo encontra um oráculo cego que fala apenas em rimas. Oferece uma profecia críptica sobre o futuro próximo do grupo (DM cria pista útil mas enigmática)."
+    },
+    {
+      "rowId": 122,
+      "columnId": 1,
+      "value": "Uma fonte de água cristalina jorra do chão. Beber da fonte restaura 1d4+1 HP e remove uma condição negativa, mas funciona apenas uma vez por pessoa."
+    },
+    {
+      "rowId": 123,
+      "columnId": 1,
+      "value": "O grupo encontra uma casa de bonecas perfeita no meio da estrada. Dentro há miniaturas exatas do grupo - mexendo nelas, podem curar 1 HP uns dos outros."
+    },
+    {
+      "rowId": 124,
+      "columnId": 1,
+      "value": "Um jardim de flores falantes pergunta sobre as aventuras do grupo. Contando uma história interessante, ganham sementes mágicas que crescem em frutas nutritivas (equivalem a 1 ração cada)."
+    },
+    {
+      "rowId": 125,
+      "columnId": 1,
+      "value": "O grupo encontra um esqueleto sentado numa cadeira de balanço, tricotando. Se deixado em paz, termina uma manta que fornece resistência ao frio por 24 horas para uma pessoa."
+    },
+    {
+      "rowId": 126,
+      "columnId": 1,
+      "value": "Uma biblioteca ambulante (livros com pernas) passa correndo pela estrada. Se conseguirem pegar um livro (CD 12 Destreza), ganham vantagem em um tipo de teste de conhecimento por 1 semana."
+    },
+    {
+      "rowId": 127,
+      "columnId": 1,
+      "value": "O grupo encontra um baú do tesouro suspenso no ar por correntes invisíveis. Só pode ser aberto falando a palavra 'por favor'. Contém 3d6 x 5 po e uma poção aleatória."
+    },
+    {
+      "rowId": 128,
+      "columnId": 1,
+      "value": "Uma chuva de moedas de cobre cai do céu por 30 segundos. Quem conseguir pegar algumas (CD 10 Destreza) ganha 2d6 moedas de cobre cada."
+    },
+    {
+      "rowId": 129,
+      "columnId": 1,
+      "value": "O grupo encontra um portal circular de pedra antiga. Atravessá-lo os teletransporta 1d4 milhas na direção que estavam indo, mas todos ficam nauseados por 10 minutos."
+    },
+    {
+      "rowId": 130,
+      "columnId": 1,
+      "value": "Um fantasma amigável de um cartógrafo oferece atualizar os mapas do grupo gratuitamente. Os mapas melhorados concedem vantagem em testes de Sobrevivência para navegação por 1 mês."
+    },
+    {
+      "rowId": 131,
+      "columnId": 1,
+      "value": "O grupo encontra uma armadura completa vazia caminhando pela estrada. Se seguida respeitosamente, deixa uma peça de equipamento menor útil antes de desaparecer."
+    },
+    {
+      "rowId": 132,
+      "columnId": 1,
+      "value": "Uma fada do tamanho de uma criança oferece trocar memórias 'chatas' por 'emocionantes'. Quem aceitar perde 1 ponto temporário de Inteligência mas ganha 1 ponto temporário de Carisma por 3 dias."
+    },
+    {
+      "rowId": 133,
+      "columnId": 1,
+      "value": "O grupo encontra um relógio de sol que marca a hora errada. Ajustando-o corretamente (CD 12 Investigação), acelera a cura natural - recuperam 1 HP extra no próximo descanso."
+    },
+    {
+      "rowId": 134,
+      "columnId": 1,
+      "value": "Uma matilha de cães fantasmagóricos passa correndo através do grupo sem causar dano. Quem for 'atravessado' ganha velocidade +10 pés por 1 hora."
+    },
+    {
+      "rowId": 135,
+      "columnId": 1,
+      "value": "O grupo encontra uma fogueira que queima com chamas azuis e não produz calor. Cozinhar nela torna qualquer comida magicamente nutritiva - uma refeição sustenta por 2 dias."
+    },
+    {
+      "rowId": 136,
+      "columnId": 1,
+      "value": "Um letreiro com letras que se reorganizam constantemente finalmente para de mover quando o grupo se aproxima. Mostra uma mensagem pessoal encorajadora para cada membro (todos ganham inspiração)."
+    },
+    {
+      "rowId": 137,
+      "columnId": 1,
+      "value": "O grupo encontra um baú que só abre quando todos colocam uma mão nele simultaneamente. Contém exatamente a quantidade de itens que há de membros no grupo - uma poção de cura menor para cada um."
+    },
+    {
+      "rowId": 138,
+      "columnId": 1,
+      "value": "Uma ponte de arco-íris sólido forma sobre um rio inexistente. Atravessá-la concede resistência a dano radiante por 24 horas, mas só aparece quando há harmonia total no grupo."
+    },
+    {
+      "rowId": 139,
+      "columnId": 1,
+      "value": "O grupo encontra um eco de suas próprias vozes vindo de um vale próximo, repetindo conversas de horas atrás. Ouvindo com atenção, podem detectar detalhes que perderam (vantagem em Percepção por 2 horas)."
+    },
+    {
+      "rowId": 140,
+      "columnId": 1,
+      "value": "Uma criatura parecida com um texugo gigante sai de uma toca e desafia o grupo para um concurso de cavar. Vencendo (CD 13 Força ou Atletismo), ela presenteia uma pá mágica que escava 2x mais rápido."
+    },
+    {
+      "rowId": 141,
+      "columnId": 1,
+      "value": "O grupo encontra um mercador de tempo que troca 10 minutos de vida por 10 minutos de habilidade aprimorada. Quem aceitar reduz HP máximo em 1 temporariamente, mas ganha +2 em um atributo à escolha por 1 dia."
+    },
+    {
+      "rowId": 142,
+      "columnId": 1,
+      "value": "Uma árvore de cristal toca música suave quando o vento passa por ela. Meditando sob ela por 10 minutos, recuperam 1 slot de magia gasto (ou ganham 1 uso extra de habilidade se não forem conjuradores)."
+    },
+    {
+      "rowId": 143,
+      "columnId": 1,
+      "value": "O grupo encontra pegadas gigantes que pegam fogo quando pisadas. Seguindo corajosamente as pegadas em chamas, encontram um dragão bebê perdido que recompensa com uma escama valiosa (100 po)."
+    },
+    {
+      "rowId": 144,
+      "columnId": 1,
+      "value": "Uma tempestade de neve mágica cai apenas numa área de 30 pés ao redor do grupo. No centro, encontram um boneco de neve que fala e oferece direções precisas para o próximo destino."
+    },
+    {
+      "rowId": 145,
+      "columnId": 1,
+      "value": "O grupo encontra um labirinto de sebes que muda constantemente. Navegando com sucesso (CD 15 Sobrevivência ou Investigação), encontram um jardim secreto com uma fonte que restaura todos os slots de magia."
+    },
+    {
+      "rowId": 146,
+      "columnId": 1,
+      "value": "Uma chuva de penas douradas cai do céu. Cada pena coletada pode ser usada como componente material para magias de cura, dobrando a quantidade curada (máximo 5 penas por pessoa)."
+    },
+    {
+      "rowId": 147,
+      "columnId": 1,
+      "value": "O grupo encontra um antigo campo de batalha onde fantasmas continuam lutando. Assistindo respeitosamente até o fim, aprendem uma manobra de combate que concede +1 de dano em ataques corpo a corpo por 3 dias."
+    },
+    {
+      "rowId": 148,
+      "columnId": 1,
+      "value": "Uma salamandra de fogo oferece aquecer as armas do grupo em troca de histórias de coragem. Armas aquecidas causam +1 de dano de fogo por 5 ataques cada."
+    },
+    {
+      "rowId": 149,
+      "columnId": 1,
+      "value": "O grupo encontra um poço de águas termais guardado por espíritos da natureza amigáveis. Banhar-se nas águas remove 1 nível de exaustão e concede 1d4 pontos de vida temporários."
+    },
+    {
+      "rowId": 150,
+      "columnId": 1,
+      "value": "Uma constelação de estrelas forma-se no céu diurno, apontando para uma direção específica. Seguindo por 1 hora, encontram um tesouro antigo guardado por um guardião amigável que testa sua sabedoria com três perguntas simples."
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   Link2,
   Loader2,
+  File,
 } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
@@ -218,6 +219,8 @@ const TableView: React.FC<{
             <Dice5Icon className="h-4 w-4 mr-1" />
             Random Throw
           </button>
+          
+          
         </div>
       </div>
 

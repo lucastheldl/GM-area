@@ -3,6 +3,7 @@ import { createTable } from "@/actions/tables";
 import { COLUMN_TYPES } from "@/consts";
 import { Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import JsonUploader from "../_components/jsonUploader";
 
 // Table creation form
 export const CreateTableForm: React.FC<{
@@ -59,12 +60,16 @@ export const CreateTableForm: React.FC<{
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-white">Create New Table</h2>
+        <div className="flex gap-4">
+
+        <JsonUploader gameId={gameId}/>
         <button
           onClick={onCancel}
           className="text-slate-400 hover:text-slate-300"
         >
           <X className="h-5 w-5" />
         </button>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
