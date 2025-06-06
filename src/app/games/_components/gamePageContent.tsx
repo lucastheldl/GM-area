@@ -149,7 +149,7 @@ const TableView: React.FC<{
 
   const handleCellClick = (rowId: number, columnId: number) => {
     if (isLoading) return; // Prevent editing if any operation is in progress
-    
+
     const cellData = getCellValue(rowId, columnId);
     setEditingCell({ rowId, columnId });
     setEditValue(cellData.value || "");
@@ -219,8 +219,6 @@ const TableView: React.FC<{
             <Dice5Icon className="h-4 w-4 mr-1" />
             Random Throw
           </button>
-          
-          
         </div>
       </div>
 
@@ -339,7 +337,9 @@ const TableView: React.FC<{
                         <div className="flex justify-between items-center w-full h-full">
                           <div
                             className={`w-full h-full ${
-                              isLoading && !isEditing ? 'opacity-50 cursor-not-allowed' : ''
+                              isLoading && !isEditing
+                                ? "opacity-50 cursor-not-allowed"
+                                : ""
                             }`}
                             onClick={() => handleCellClick(row.id, column.id)}
                           >
@@ -352,11 +352,16 @@ const TableView: React.FC<{
                                 onKeyDown={handleKeyDown}
                                 disabled={isLoading && !isEditing}
                                 className="w-full py-1 px-2 rounded bg-slate-700 border border-indigo-500 text-white focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                                autoFocus
                               />
                             ) : (
-                              <div className={`min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded flex-1 ${
-                                isLoading ? 'cursor-not-allowed hover:bg-transparent' : ''
-                              }`}>
+                              <div
+                                className={`min-h-6 cursor-pointer hover:bg-slate-700/50 px-1 py-0.5 rounded flex-1 ${
+                                  isLoading
+                                    ? "cursor-not-allowed hover:bg-transparent"
+                                    : ""
+                                }`}
+                              >
                                 {cellData.value || (
                                   <span className="text-slate-600 italic">
                                     Click to edit
@@ -484,7 +489,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     if (columns.length === 0) {
       return;
     }
-    
+
     setIsLoading(true);
     try {
       const { row } = await createRow({ table_id: tableId });
@@ -499,7 +504,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         row_id: formattedRow.id,
         column_id: col.id,
         value: "",
-        content:"",
+        content: "",
       }));
       const { cells } = await createCells(newCellValues);
 
@@ -574,12 +579,12 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
 
       setColumns([...columns, formattedNewColumn]);
       if (!rows) return;
-      
+
       const newCellValues = rows.map((row, index) => ({
         row_id: row.id,
         column_id: newColumn.column[0].id,
         value: null,
-        content:"",
+        content: "",
       }));
       const { cells } = await createCells(newCellValues);
 
