@@ -3,15 +3,19 @@ import { File, X, Check, XCircle, Table } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface TableData {
-  game_id:number,
+  game_id: number;
   name: string;
   columns: Array<{ id: number; name: string; type: string; order: number }>;
   rows: Array<{ id: number }>;
-  cellValues: Array<{ rowId: number; columnId: number; value: string | number | boolean }>;
+  cellValues: Array<{
+    rowId: number;
+    columnId: number;
+    value: string | number | boolean;
+  }>;
 }
 
 interface JsonImportModalProps {
-  gameId:number,
+  gameId: number;
   isOpen: boolean;
   onClose: () => void;
   onImport: (data: TableData) => void;
@@ -55,28 +59,40 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
     reader.readAsText(file);
   };
 
-  const validateJsonStructure = (data: any): { isValid: boolean; error?: string; data?: TableData } => {
+  const validateJsonStructure = (
+    data: any
+  ): { isValid: boolean; error?: string; data?: TableData } => {
     try {
       // Check if data has required table structure
-      if (!data || typeof data !== 'object') {
+      if (!data || typeof data !== "object") {
         return { isValid: false, error: "Data must be an object" };
       }
 
       const { name, columns, rows, cellValues } = data;
 
       // Validate name
-      if (!name || typeof name !== 'string') {
-        return { isValid: false, error: "Table must have a 'name' property (string)" };
+      if (!name || typeof name !== "string") {
+        return {
+          isValid: false,
+          error: "Table must have a 'name' property (string)",
+        };
       }
 
       // Validate cols
       if (!Array.isArray(columns) || columns.length === 0) {
-        return { isValid: false, error: "Table must have a 'cols' array with at least one column" };
+        return {
+          isValid: false,
+          error: "Table must have a 'cols' array with at least one column",
+        };
       }
 
       for (const col of columns) {
         if (!col.id || !col.name || !col.type || col.order === undefined) {
-          return { isValid: false, error: "Each column must have 'id', 'name', 'type', and 'order' properties" };
+          return {
+            isValid: false,
+            error:
+              "Each column must have 'id', 'name', 'type', and 'order' properties",
+          };
         }
       }
 
@@ -87,7 +103,10 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
 
       for (const row of rows) {
         if (!row.id) {
-          return { isValid: false, error: "Each row must have an 'id' property" };
+          return {
+            isValid: false,
+            error: "Each row must have an 'id' property",
+          };
         }
       }
 
@@ -97,34 +116,49 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
       }
 
       for (const cell of cellValues) {
-        if (cell.rowId === undefined || cell.columnId === undefined || cell.value === undefined) {
-          return { isValid: false, error: "Each cell must have 'rowId', 'columnId', and 'value' properties" };
+        if (
+          cell.rowId === undefined ||
+          cell.columnId === undefined ||
+          cell.value === undefined
+        ) {
+          return {
+            isValid: false,
+            error:
+              "Each cell must have 'rowId', 'columnId', and 'value' properties",
+          };
         }
       }
 
-      return { 
-        isValid: true, 
+      return {
+        isValid: true,
         data: {
-          game_id:gameId,
+          game_id: gameId,
           name,
           columns,
           rows,
-          cellValues
-        }
+          cellValues,
+        },
       };
     } catch (error) {
       return { isValid: false, error: "Error validating data structure" };
     }
   };
 
-  const getTableHeaders = (): Array<{ id: number; name: string; type: string; order: number }> => {
+  const getTableHeaders = (): Array<{
+    id: number;
+    name: string;
+    type: string;
+    order: number;
+  }> => {
     if (!jsonData || !jsonData.columns) return [];
     return [...jsonData.columns].sort((a, b) => a.order - b.order);
   };
 
   const getCellValue = (rowId: number, columnId: number): string => {
     if (!jsonData) return "";
-    const cell = jsonData.cellValues.find(c => c.rowId === rowId && c.columnId === columnId);
+    const cell = jsonData.cellValues.find(
+      (c) => c.rowId === rowId && c.columnId === columnId
+    );
     return cell ? String(cell.value) : "";
   };
 
@@ -140,7 +174,7 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
     setIsValidData(false);
     setValidationError("");
     if (inputRef.current) {
-      inputRef.current.value = '';
+      inputRef.current.value = "";
     }
     onClose();
   };
@@ -188,7 +222,8 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
                     Select Table JSON File
                   </h4>
                   <p className="text-sm text-slate-400 mb-4">
-                    Choose a JSON file with table structure: name, cols, rows, cells
+                    Choose a JSON file with table structure: name, cols, rows,
+                    cells
                   </p>
                   <button
                     type="button"
@@ -276,7 +311,10 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
                                 >
                                   <div className="max-w-xs truncate">
                                     {(() => {
-                                      const value = getCellValue(row.id, header.id);
+                                      const value = getCellValue(
+                                        row.id,
+                                        header.id
+                                      );
                                       return value ? (
                                         value
                                       ) : (
@@ -295,7 +333,8 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
                     </div>
                     {jsonData.rows.length > 10 && (
                       <div className="bg-slate-800 px-4 py-2 text-center text-sm text-slate-400">
-                        Showing first 10 rows of {jsonData.rows.length} total rows
+                        Showing first 10 rows of {jsonData.rows.length} total
+                        rows
                       </div>
                     )}
                   </div>
@@ -306,13 +345,19 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
               {!isValidData && validationError && (
                 <div className="flex-1 overflow-auto p-4">
                   <div className="border border-red-500/20 bg-red-500/5 rounded-lg p-4">
-                    <h4 className="text-red-400 font-medium mb-2">Validation Error:</h4>
-                    <p className="text-sm text-red-300 mb-4">{validationError}</p>
-                    
+                    <h4 className="text-red-400 font-medium mb-2">
+                      Validation Error:
+                    </h4>
+                    <p className="text-sm text-red-300 mb-4">
+                      {validationError}
+                    </p>
+
                     <div className="mb-4">
-                      <h5 className="text-slate-300 font-medium mb-2">Expected JSON structure:</h5>
+                      <h5 className="text-slate-300 font-medium mb-2">
+                        Expected JSON structure:
+                      </h5>
                       <pre className="text-sm text-slate-400 bg-slate-800 p-3 rounded overflow-auto">
-                              {`{
+                        {`{
                                 "name": "Table Name",
                                 "columns": [
                                   {
@@ -353,7 +398,7 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
                   setJsonData(null);
                   setIsValidData(false);
                   if (inputRef.current) {
-                    inputRef.current.value = '';
+                    inputRef.current.value = "";
                   }
                 }}
                 className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-white font-medium transition-colors flex items-center space-x-2"
@@ -388,18 +433,18 @@ export const JsonImportModal: React.FC<JsonImportModalProps> = ({
 };
 
 // Updated JsonUploader component to use the modal
-export default function JsonUploader({gameId}:{gameId:number}) {
+export default function JsonUploader({ gameId }: { gameId: number }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  async function handleImport (data: TableData) {
-    console.log('Importing table data:', {...data,game_id:gameId});
+  async function handleImport(data: TableData) {
+    console.log("Importing table data:", { ...data, game_id: gameId });
     try {
-       await createImportedTable(data);
+      await createImportedTable(data);
       console.log("success");
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   return (
     <>
@@ -413,7 +458,7 @@ export default function JsonUploader({gameId}:{gameId:number}) {
       </button>
 
       <JsonImportModal
-      gameId={gameId}
+        gameId={gameId}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onImport={handleImport}
