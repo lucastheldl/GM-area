@@ -10,10 +10,27 @@ export async function middleware(request: NextRequest) {
   // Get the session cookie
   const sessionCookie = request.cookies.get("session");
 
+
   // Verify the session using your existing decrypt function
   let user = null;
   if (sessionCookie?.value) {
-    user = await verifyToken(sessionCookie.value);
+   try {
+      user = await verifyToken(sessionCookie.value);
+    } catch (error) {
+      // Handle JWT expired or any other verification errors
+      console.log("Token verification failed:");
+      
+      // Delete the expired/invalid cookie
+      const response = NextResponse.next();
+      response.cookies.set("session", "", {
+        expires: new Date(0),
+        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+      });
+      return response;
+    }
   }
 
   // Define public routes that don't require authentication
