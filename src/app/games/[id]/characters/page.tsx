@@ -18,6 +18,8 @@ interface Character {
   attack: number;
   hp: number;
   maxHp: number;
+ mana: number;
+ maxMana: number;
   defense: number;
   type: "ally" | "enemy";
 }
@@ -43,6 +45,7 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
 
   const isAlly = character.type === "ally";
   const hpPercentage = (character.hp / character.maxHp) * 100;
+  const manaPercentage = (character.mana / character.maxMana) * 100;
 
   const handleEdit = (field: string, value: string | number) => {
     setIsEditing(field);
@@ -64,6 +67,15 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
         updatedFields.hp = editValues.maxHp;
       }
 
+      // If updating maxMana and it's less than current mana, also update mana
+      if (
+        field === "maxMana" &&
+        editValues.maxMana &&
+        editValues.maxMana < character.mana
+      ) {
+        updatedFields.mana = editValues.maxMana;
+      }
+
       onUpdateCharacter(character.id, updatedFields);
     }
     setIsEditing(null);
@@ -81,6 +93,37 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
     } else if (e.key === "Escape") {
       handleCancel();
     }
+  };
+
+  // New increment/decrement functions
+  const handleIncrement = (field: keyof Character, amount: number = 1) => {
+    const currentValue = character[field] as number;
+    let newValue = currentValue + amount;
+    
+    // Special handling for HP to not exceed maxHp
+    if (field === "hp") {
+      newValue = Math.min(newValue, character.maxHp);
+    }
+    
+    // Special handling for mana to not exceed maxMana
+    if (field === "mana") {
+      newValue = Math.min(newValue, character.maxMana);
+    }
+    
+    // Prevent negative values
+    newValue = Math.max(0, newValue);
+    
+    onUpdateCharacter(character.id, { [field]: newValue });
+  };
+
+  const handleDecrement = (field: keyof Character, amount: number = 1) => {
+    const currentValue = character[field] as number;
+    let newValue = currentValue - amount;
+    
+    // Prevent negative values
+    newValue = Math.max(0, newValue);
+    
+    onUpdateCharacter(character.id, { [field]: newValue });
   };
 
   return (
@@ -190,12 +233,26 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => handleEdit("hp", character.hp)}
-                  className="text-white font-bold hover:text-red-400 transition-colors"
-                >
-                  {character.hp}
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleDecrement("hp")}
+                    className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => handleEdit("hp", character.hp)}
+                    className="text-white font-bold hover:text-red-400 transition-colors px-1"
+                  >
+                    {character.hp}
+                  </button>
+                  <button
+                    onClick={() => handleIncrement("hp")}
+                    className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    +
+                  </button>
+                </div>
               )}
               <span className="text-slate-400">/</span>
               {isEditing === "maxHp" ? (
@@ -227,12 +284,26 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={() => handleEdit("maxHp", character.maxHp)}
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  {character.maxHp}
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleDecrement("maxHp")}
+                    className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => handleEdit("maxHp", character.maxHp)}
+                    className="text-slate-400 hover:text-white transition-colors px-1"
+                  >
+                    {character.maxHp}
+                  </button>
+                  <button
+                    onClick={() => handleIncrement("maxHp")}
+                    className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    +
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -250,6 +321,131 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
           </div>
         </div>
 
+        {/* Mana Bar */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <Zap className="h-4 w-4 text-blue-400" />
+              <span className="text-slate-300 font-medium">Mana</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {isEditing === "mana" ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={editValues.mana || ""}
+                    onChange={(e) =>
+                      setEditValues({
+                        ...editValues,
+                        mana: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    onKeyDown={(e) => handleKeyPress(e, "mana")}
+                    className="w-16 text-white bg-slate-800/60 border border-slate-600 rounded px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => handleSave("mana")}
+                    className="text-green-400 hover:text-green-300"
+                  >
+                    <Check className="h-3 w-3" />
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="text-red-400 hover:text-red-300"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleDecrement("mana")}
+                    className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => handleEdit("mana", character.mana)}
+                    className="text-white font-bold hover:text-blue-400 transition-colors px-1"
+                  >
+                    {character.mana}
+                  </button>
+                  <button
+                    onClick={() => handleIncrement("mana")}
+                    className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+              <span className="text-slate-400">/</span>
+              {isEditing === "maxMana" ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={editValues.maxMana || ""}
+                    onChange={(e) =>
+                      setEditValues({
+                        ...editValues,
+                        maxMana: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    onKeyDown={(e) => handleKeyPress(e, "maxMana")}
+                    className="w-16 text-white bg-slate-800/60 border border-slate-600 rounded px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => handleSave("maxMana")}
+                    className="text-green-400 hover:text-green-300"
+                  >
+                    <Check className="h-3 w-3" />
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="text-red-400 hover:text-red-300"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleDecrement("maxMana")}
+                    className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    −
+                  </button>
+                  <button
+                    onClick={() => handleEdit("maxMana", character.maxMana)}
+                    className="text-slate-400 hover:text-white transition-colors px-1"
+                  >
+                    {character.maxMana}
+                  </button>
+                  <button
+                    onClick={() => handleIncrement("maxMana")}
+                    className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded px-1 transition-colors text-sm font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="w-full bg-slate-800/50 rounded-full h-3 overflow-hidden">
+            <div
+              className={`h-full transition-all duration-500 ${
+                manaPercentage > 60
+                  ? "bg-blue-500"
+                  : manaPercentage > 30
+                  ? "bg-cyan-500"
+                  : "bg-purple-500"
+              }`}
+              style={{ width: `${Math.max(0, Math.min(100, manaPercentage))}%` }}
+            />
+          </div>
+        </div>
+
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
           {/* Attack Stat */}
@@ -260,9 +456,25 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
               isAlly ? "border-emerald-500/20" : "border-red-500/20"
             }`}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <Sword className="h-4 w-4 text-orange-400" />
-              <span className="text-slate-300 text-sm font-medium">Attack</span>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Sword className="h-4 w-4 text-orange-400" />
+                <span className="text-slate-300 text-sm font-medium">Attack</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleDecrement("attack")}
+                  className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded w-6 h-6 flex items-center justify-center transition-colors text-xs font-bold"
+                >
+                  −
+                </button>
+                <button
+                  onClick={() => handleIncrement("attack")}
+                  className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded w-6 h-6 flex items-center justify-center transition-colors text-xs font-bold"
+                >
+                  +
+                </button>
+              </div>
             </div>
             {isEditing === "attack" ? (
               <div className="flex items-center gap-2">
@@ -310,11 +522,27 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
               isAlly ? "border-emerald-500/20" : "border-red-500/20"
             }`}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <Shield className="h-4 w-4 text-blue-400" />
-              <span className="text-slate-300 text-sm font-medium">
-                Defense
-              </span>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-blue-400" />
+                <span className="text-slate-300 text-sm font-medium">
+                  Defense
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleDecrement("defense")}
+                  className="text-red-400 hover:text-red-300 bg-slate-800/50 rounded w-6 h-6 flex items-center justify-center transition-colors text-xs font-bold"
+                >
+                  −
+                </button>
+                <button
+                  onClick={() => handleIncrement("defense")}
+                  className="text-green-400 hover:text-green-300 bg-slate-800/50 rounded w-6 h-6 flex items-center justify-center transition-colors text-xs font-bold"
+                >
+                  +
+                </button>
+              </div>
             </div>
             {isEditing === "defense" ? (
               <div className="flex items-center gap-2">
@@ -358,7 +586,6 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
     </div>
   );
 };
-
 const NewCharacterCard: React.FC<NewCharacterCardProps> = ({
   onClick,
   type,
@@ -407,6 +634,8 @@ export default function CharactersPage() {
       attack: Math.floor(Math.random() * 10) + 8,
       hp: Math.floor(Math.random() * 50) + 80,
       maxHp: Math.floor(Math.random() * 50) + 80,
+       mana: Math.floor(Math.random() * 30) + 50,
+      maxMana: Math.floor(Math.random() * 30) + 50,
       defense: Math.floor(Math.random() * 8) + 5,
       type,
     };
