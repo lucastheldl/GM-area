@@ -86,7 +86,7 @@ const TablesSidebar: React.FC<{
                     className="flex-1 text-left px-4 py-2 flex items-center hover:cursor-pointer"
                   >
                     <Layers className="h-4 w-4 mr-2" />
-                    <span className="truncate">{table.name}</span>
+                    <span className="truncate max-w-[9rem]">{table.name}</span>
                   </button>
                   <button
                     type="button"
