@@ -184,6 +184,9 @@ export async function createTable(data: any) {
 
   return { ...table[0], columns: columns };
 }
+export async function deleteTable(tableId: number) {
+   await db.delete(tableTable).where(eq(tableTable.id,tableId));
+}
 export async function createImportedTable(data: any) {
   // Create the table
   const table = await db.insert(tableTable).values({

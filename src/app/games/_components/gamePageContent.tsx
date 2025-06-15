@@ -10,6 +10,7 @@ import {
   Link2,
   Loader2,
   File,
+  Trash2,
 } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
@@ -21,6 +22,7 @@ import {
   createTable,
   deleteColumn,
   deleteRows,
+  deleteTable,
   editCells,
   getTable,
 } from "@/actions/tables";
@@ -33,15 +35,19 @@ const TablesSidebar: React.FC<{
   activeTableId: number | null;
   onTableSelect: (tableId: number) => void;
   onCreateTable: () => void;
+  onDeleteTable: (tableId: number) => void;
   gameId: number;
+   isLoading:boolean,
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 }> = ({
   tables,
   activeTableId,
   onTableSelect,
   onCreateTable,
+  onDeleteTable,
   setSearch,
   gameId,
+   isLoading
 }) => {
   return (
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
@@ -66,18 +72,35 @@ const TablesSidebar: React.FC<{
           {tables.length > 0 &&
             tables.map((table) => (
               <li key={table.id}>
-                <button
-                  type="button"
-                  onClick={() => onTableSelect(table.id)}
-                  className={`w-full text-left px-4 py-2 flex items-center ${
+                <div
+                  className={`flex items-center ${
                     activeTableId === table.id
                       ? "bg-indigo-600 text-white"
                       : "text-slate-300 hover:bg-slate-800"
                   }`}
                 >
-                  <Layers className="h-4 w-4 mr-2" />
-                  <span className="truncate">{table.name}</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => onTableSelect(table.id)}
+                    disabled={isLoading}
+                    className="flex-1 text-left px-4 py-2 flex items-center hover:cursor-pointer"
+                  >
+                    <Layers className="h-4 w-4 mr-2" />
+                    <span className="truncate">{table.name}</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteTable(table.id);
+                    }}
+                    className="px-3 py-2 text-slate-400 hover:text-red-400 hover:bg-indigo-700 hover:cursor-pointer rounded-md transition-colors"
+                    title="Delete table"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
               </li>
             ))}
         </ul>
@@ -602,6 +625,19 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       setIsLoading(false);
     }
   }
+  async function onDeleteTable(id:number){
+    setIsLoading(true);
+    try {
+      await deleteTable(id)
+
+      setTables(tables.filter((t)=>t.id !== id));
+      console.log("table deleted!")
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   // Get the active table and its data
   const activeTable = tables.find((t) => t.id === activeTableId);
@@ -621,6 +657,8 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         onCreateTable={handleCreateTableClick}
         gameId={game.id}
         setSearch={setSearch}
+        onDeleteTable={onDeleteTable}
+         isLoading={isLoading}
       />
 
       <div className="flex-grow overflow-auto">
