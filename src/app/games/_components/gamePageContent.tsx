@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
-import { CreateTableForm } from "../[id]/table-form";
+import { CreateTableForm } from "./table-form";
 import {
   createCells,
   createColumn,
