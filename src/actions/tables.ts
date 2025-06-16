@@ -1,3 +1,4 @@
+"use server"
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cellValues, columnTable, rowTable, tableTable } from "@/db/schema";
