@@ -10,7 +10,10 @@ import {
   Heart,
   Users,
   Zap,
+  ChevronLeft,
 } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 interface Character {
   id: number;
@@ -627,6 +630,9 @@ export default function CharactersPage() {
   const allies = characters.filter((char) => char.type === "ally");
   const enemies = characters.filter((char) => char.type === "enemy");
 
+  const params = useParams();
+  const id = params.id;
+
   const handleAddCharacter = (type: "ally" | "enemy") => {
     const newCharacter: Character = {
       id: nextId,
@@ -665,6 +671,12 @@ export default function CharactersPage() {
     <div className="min-h-screen bg-slate-950">
       <div className="container mx-auto p-6">
         <header className="mb-8 text-center">
+         <Link
+          href={`/games/${id}`}
+          className="flex gap-2 items-center text-sm text-slate-400 hover:text-slate-200"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back
+        </Link>
           <h1 className="text-4xl font-bold text-white mb-2">Battle Arena</h1>
           <p className="text-slate-400">
             Manage your allies and enemies for epic encounters
