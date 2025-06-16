@@ -53,7 +53,7 @@ const TablesSidebar: React.FC<{
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
       <div className="p-4 border-b border-slate-700">
         <Link
-          href={"/"}
+          href={`/games/${gameId}`}
           className="flex gap-2 items-center text-sm text-slate-400 hover:text-slate-200"
         >
           <ChevronLeft className="h-4 w-4" /> Back
