@@ -1,3 +1,4 @@
+"use server"
 import { userTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
