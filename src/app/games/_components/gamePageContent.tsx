@@ -362,7 +362,7 @@ const TableView: React.FC<{
         editingCell.rowId,
         editingCell.columnId,
         editValue,
-        cellData.link
+        cellData.link || ""
       );
       setEditingCell(null);
     }
