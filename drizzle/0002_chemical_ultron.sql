@@ -1,0 +1,1 @@
+ALTER TABLE "cell_values" ADD COLUMN "link" varchar;

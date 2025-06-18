@@ -1,0 +1,1 @@
+ALTER TABLE "cell_values" ALTER COLUMN "link" SET DEFAULT '';

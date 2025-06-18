@@ -29,4 +29,5 @@ export interface CellValue {
   rowId: number;
   columnId: number;
   value: string | null;
+  link: string | null;
 }
