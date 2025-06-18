@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { cellValues, columnTable, rowTable, tableTable } from "@/db/schema";
@@ -16,6 +16,7 @@ interface Column {
 interface CellValue {
   id: number;
   value: string;
+  link: string;
 }
 
 interface RowMapType {
@@ -34,6 +35,7 @@ interface RawRow {
   row_id: number | null;
   cell_value_id: number | null;
   cell_value: string | null;
+  cell_link: string | null;
   [key: string]: unknown;
 }
 
@@ -57,6 +59,7 @@ export async function getTable(id: number): Promise<{
     columnId: number;
     id: number;
     value: string;
+    link: string;
   }[];
 }> {
   const completeTable = await db.execute<RawRow>(
@@ -72,7 +75,8 @@ export async function getTable(id: number): Promise<{
       r.id AS row_id,
       
       cv.id AS cell_value_id,
-      cv.value AS cell_value
+      cv.value AS cell_value,
+      cv.link AS cell_link
 
       FROM tables t
       LEFT JOIN columns c ON c.table_id = t.id 
@@ -103,6 +107,7 @@ export async function getTable(id: number): Promise<{
     columnId: number;
     id: number;
     value: string;
+    link: string;
   }[] = [];
 
   for (const row of completeTable.rows) {
@@ -114,6 +119,7 @@ export async function getTable(id: number): Promise<{
       row_id,
       cell_value_id,
       cell_value,
+      cell_link,
     } = row;
 
     // Add column if it exists and hasn't been added yet
@@ -153,6 +159,7 @@ export async function getTable(id: number): Promise<{
       rowEntry.values[column_id] = {
         id: cell_value_id,
         value: cell_value,
+        link: cell_link || "",
       };
 
       cellValues.push({
@@ -160,6 +167,7 @@ export async function getTable(id: number): Promise<{
         columnId: column_id,
         id: cell_value_id,
         value: cell_value,
+        link: cell_link || "",
       });
     }
   }
@@ -186,14 +194,17 @@ export async function createTable(data: any) {
   return { ...table[0], columns: columns };
 }
 export async function deleteTable(tableId: number) {
-   await db.delete(tableTable).where(eq(tableTable.id,tableId));
+  await db.delete(tableTable).where(eq(tableTable.id, tableId));
 }
 export async function createImportedTable(data: any) {
   // Create the table
-  const table = await db.insert(tableTable).values({
-    name: data.name,
-    game_id: data.game_id
-  }).returning();
+  const table = await db
+    .insert(tableTable)
+    .values({
+      name: data.name,
+      game_id: data.game_id,
+    })
+    .returning();
 
   const tableId = table[0].id;
 
@@ -221,10 +232,7 @@ export async function createImportedTable(data: any) {
     table_id: tableId,
   }));
 
-  const rows = await db
-    .insert(rowTable)
-    .values(rowsWithTableId)
-    .returning();
+  const rows = await db.insert(rowTable).values(rowsWithTableId).returning();
 
   // Create a mapping from old row IDs to new row IDs
   const rowIdMap = new Map<number, number>();
@@ -233,21 +241,24 @@ export async function createImportedTable(data: any) {
   });
 
   // Create cell values with the new row and column IDs
-  const cellValuesWithNewIds = data.cellValues.map((cell: any) => ({
-    row_id: rowIdMap.get(cell.rowId),
-    column_id: columnIdMap.get(cell.columnId),
-    value: String(cell.value), 
-  })).filter((cell: any) => cell.row_id && cell.column_id);
+  const cellValuesWithNewIds = data.cellValues
+    .map((cell: any) => ({
+      row_id: rowIdMap.get(cell.rowId),
+      column_id: columnIdMap.get(cell.columnId),
+      value: String(cell.value),
+      link: String(cell.link),
+    }))
+    .filter((cell: any) => cell.row_id && cell.column_id);
 
   if (cellValuesWithNewIds.length > 0) {
     await db.insert(cellValues).values(cellValuesWithNewIds);
   }
 
-  return { 
-    table: table[0], 
+  return {
+    table: table[0],
     columns: columns,
     rows: rows,
-    message: "Table imported successfully"
+    message: "Table imported successfully",
   };
 }
 
@@ -263,12 +274,10 @@ export async function createRow(data: any) {
   return { row };
 }
 export async function deleteColumn(id: number) {
-  await db.delete(columnTable).where(eq(columnTable.id,id));
-
-  
+  await db.delete(columnTable).where(eq(columnTable.id, id));
 }
-export async function deleteRows(tableId:number) {
-  await db.delete(rowTable).where(eq(rowTable.table_id,tableId));
+export async function deleteRows(tableId: number) {
+  await db.delete(rowTable).where(eq(rowTable.table_id, tableId));
 }
 export async function createCells(data: Omit<NewCellValue, "id">[]) {
   const cells = await db.insert(cellValues).values(data).returning();
@@ -276,10 +285,15 @@ export async function createCells(data: Omit<NewCellValue, "id">[]) {
   return { cells };
 }
 export async function editCells(data: any) {
-  const cell = await db
-    .update(cellValues)
-    .set({ value: data.value })
-    .where(eq(cellValues.id, data.id));
+  const updateData: { value?: string; link?: string } = {};
 
-  return { cell };
+  if (data.value !== undefined) {
+    updateData.value = data.value;
+  }
+
+  if (data.link !== undefined) {
+    updateData.link = data.link;
+  }
+
+  await db.update(cellValues).set(updateData).where(eq(cellValues.id, data.id));
 }

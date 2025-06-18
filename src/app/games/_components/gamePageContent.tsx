@@ -11,6 +11,10 @@ import {
   Loader2,
   File,
   Trash2,
+  ExternalLink,
+  Edit3,
+  Save,
+  X,
 } from "lucide-react";
 import type { CellValue, Column, Game, Row, Table } from "@/@types";
 import { COLUMN_TYPES } from "@/consts";
@@ -29,6 +33,162 @@ import {
 import Link from "next/link";
 import { RandomThrowModal } from "./throwModal";
 
+// Cell Link Modal Component
+const CellLinkModal: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  cellData: { id: number | null; value: string; link: string | null };
+  onUpdateLink: (
+    cellId: number | null,
+    rowId: number,
+    columnId: number,
+    value: string,
+    link: string
+  ) => void;
+  isLoading: boolean;
+  rowId: number;
+  columnId: number;
+}> = ({
+  isOpen,
+  onClose,
+  cellData,
+  onUpdateLink,
+  isLoading,
+  rowId,
+  columnId,
+}) => {
+  const [linkValue, setLinkValue] = useState(cellData.link || "");
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLinkValue(cellData.link || "");
+      setIsEditing(!cellData.link);
+    }
+  }, [isOpen, cellData.link]);
+
+  const handleSave = async () => {
+    await onUpdateLink(cellData.id, rowId, columnId, cellData.value, linkValue);
+    setIsEditing(false);
+  };
+
+  const handleVisit = () => {
+    if (linkValue) {
+      // Ensure the link has a protocol
+      const url =
+        linkValue.startsWith("http://") || linkValue.startsWith("https://")
+          ? linkValue
+          : `https://${linkValue}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const handleClose = () => {
+    setIsEditing(false);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-slate-800 rounded-lg p-6 w-full max-w-md mx-4 border border-slate-700">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-white">Cell Link</h3>
+          <button
+            onClick={handleClose}
+            className="text-slate-400 hover:text-white transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="mb-4">
+          <p className="text-sm text-slate-300 mb-2">
+            Cell content:{" "}
+            <span className="font-medium">{cellData.value || "Empty"}</span>
+          </p>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Link URL
+          </label>
+          {isEditing ? (
+            <input
+              type="url"
+              value={linkValue}
+              onChange={(e) => setLinkValue(e.target.value)}
+              placeholder="https://example.com"
+              className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-md text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              disabled={isLoading}
+            />
+          ) : (
+            <div className="flex items-center space-x-2">
+              <div className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-md text-slate-300 min-h-[2.5rem] flex items-center">
+                {linkValue || (
+                  <span className="text-slate-500 italic">No link set</span>
+                )}
+              </div>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-md text-white transition-colors"
+                disabled={isLoading}
+              >
+                <Edit3 className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="flex justify-end space-x-3">
+          {isEditing ? (
+            <>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 text-slate-300 hover:text-white transition-colors"
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isLoading}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed rounded-md text-white flex items-center transition-colors"
+              >
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
+                Save
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleClose}
+                className="px-4 py-2 text-slate-300 hover:text-white transition-colors"
+              >
+                Close
+              </button>
+              {linkValue && (
+                <button
+                  onClick={handleVisit}
+                  className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md text-white flex items-center transition-colors"
+                >
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Visit
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Sidebar component for listing tables
 const TablesSidebar: React.FC<{
   tables: Table[];
@@ -37,7 +197,7 @@ const TablesSidebar: React.FC<{
   onCreateTable: () => void;
   onDeleteTable: (tableId: number) => void;
   gameId: number;
-   isLoading:boolean,
+  isLoading: boolean;
   setSearch: React.Dispatch<React.SetStateAction<string>>;
 }> = ({
   tables,
@@ -47,7 +207,7 @@ const TablesSidebar: React.FC<{
   onDeleteTable,
   setSearch,
   gameId,
-   isLoading
+  isLoading,
 }) => {
   return (
     <div className="w-64 bg-slate-900 border-r border-slate-700 h-full flex flex-col">
@@ -132,7 +292,8 @@ const TableView: React.FC<{
     cellValueId: number | null,
     rowId: number,
     columnId: number,
-    value: string
+    value: string,
+    link?: string
   ) => void;
   onAddColumn: (tableId: number, name: string, type: string) => void;
   isLoading: boolean;
@@ -158,16 +319,31 @@ const TableView: React.FC<{
     columnId: number;
   } | null>(null);
   const [editValue, setEditValue] = useState<string>("");
+  const [linkModalData, setLinkModalData] = useState<{
+    isOpen: boolean;
+    cellData: { id: number | null; value: string; link: string | null };
+    rowId: number;
+    columnId: number;
+  }>({
+    isOpen: false,
+    cellData: { id: null, value: "", link: null },
+    rowId: 0,
+    columnId: 0,
+  });
 
   // Get cell value by row and column
   const getCellValue = (
     rowId: number,
     columnId: number
-  ): { id: number | null; value: string } => {
+  ): { id: number | null; value: string; link: string | null } => {
     const cell = cellValues.find(
       (cv) => cv.rowId === rowId && cv.columnId === columnId
     );
-    return { id: cell?.id || null, value: cell?.value || "" };
+    return {
+      id: cell?.id || null,
+      value: cell?.value || "",
+      link: cell?.link || null,
+    };
   };
 
   const handleCellClick = (rowId: number, columnId: number) => {
@@ -185,7 +361,8 @@ const TableView: React.FC<{
         cellData.id,
         editingCell.rowId,
         editingCell.columnId,
-        editValue
+        editValue,
+        cellData.link
       );
       setEditingCell(null);
     }
@@ -199,7 +376,20 @@ const TableView: React.FC<{
       setNewColumnType("text");
     }
   }
-  async function handleGoToCellPage(id: number) {}
+
+  function handleOpenCellLinkModal(
+    cellId: number | null,
+    rowId: number,
+    columnId: number
+  ) {
+    const cellData = getCellValue(rowId, columnId);
+    setLinkModalData({
+      isOpen: true,
+      cellData: cellData,
+      rowId: rowId,
+      columnId: columnId,
+    });
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -395,9 +585,17 @@ const TableView: React.FC<{
                           </div>
                           {cellData.value && (
                             <button
-                              className="opacity-0 group-hover:opacity-100 hover:text-indigo-500 hover:cursor-pointer ml-2 transition-opacity"
+                              className={`opacity-0 group-hover:opacity-100 transition-opacity hover:cursor-pointer ml-2 ${
+                                cellData.link
+                                  ? "text-indigo-500 hover:text-indigo-400 hover:cursor-pointer"
+                                  : " hover:text-indigo-500 "
+                              }`}
                               onClick={() =>
-                                handleGoToCellPage(cellData.id || 0)
+                                handleOpenCellLinkModal(
+                                  cellData.id,
+                                  row.id,
+                                  column.id
+                                )
                               }
                             >
                               <Link2 className="rotate-45" />
@@ -413,6 +611,16 @@ const TableView: React.FC<{
           </tbody>
         </table>
       </div>
+
+      <CellLinkModal
+        isOpen={linkModalData.isOpen}
+        onClose={() => setLinkModalData({ ...linkModalData, isOpen: false })}
+        cellData={linkModalData.cellData}
+        onUpdateLink={onUpdateCellValue}
+        isLoading={isLoading}
+        rowId={linkModalData.rowId}
+        columnId={linkModalData.columnId}
+      />
     </div>
   );
 };
@@ -528,6 +736,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         column_id: col.id,
         value: "",
         content: "",
+        link: "",
       }));
       const { cells } = await createCells(newCellValues);
 
@@ -536,6 +745,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         rowId: c.row_id,
         columnId: c.column_id,
         value: c.value,
+        link: c.link,
       }));
 
       setCellValues([...cellValues, ...formattedCells]);
@@ -551,13 +761,25 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
     cellValueId: number | null,
     rowId: number,
     columnId: number,
-    value: string
+    value: string,
+    link?: string
   ) {
     setIsLoading(true);
     try {
-      await editCells({ id: cellValueId, value });
+      // Create the update object conditionally based on what's being updated
+      const updateData: any = { id: cellValueId, value };
+      if (link !== undefined) {
+        updateData.link = link;
+      }
+
+      await editCells(updateData);
+
       setCellValues(
-        cellValues.map((cv) => (cv.id === cellValueId ? { ...cv, value } : cv))
+        cellValues.map((cv) =>
+          cv.id === cellValueId
+            ? { ...cv, value, ...(link !== undefined && { link }) }
+            : cv
+        )
       );
     } catch (error) {
       console.log("Error while updating values");
@@ -581,7 +803,6 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       console.log("Erro while deleting column");
     }
   }
-
   async function handleAddColumn(tableId: number, name: string, type: string) {
     const tableColumns = columns.filter((col) => col.tableId === tableId);
     const order = tableColumns.length;
@@ -608,6 +829,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         column_id: newColumn.column[0].id,
         value: null,
         content: "",
+        link: "",
       }));
       const { cells } = await createCells(newCellValues);
 
@@ -616,6 +838,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         rowId: c.row_id,
         columnId: c.column_id,
         value: c.value,
+        link: c.link,
       }));
 
       setCellValues([...cellValues, ...formattedCells]);
@@ -625,15 +848,15 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
       setIsLoading(false);
     }
   }
-  async function onDeleteTable(id:number){
+  async function onDeleteTable(id: number) {
     setIsLoading(true);
     try {
-      await deleteTable(id)
+      await deleteTable(id);
 
-      setTables(tables.filter((t)=>t.id !== id));
-      console.log("table deleted!")
+      setTables(tables.filter((t) => t.id !== id));
+      console.log("table deleted!");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -658,7 +881,7 @@ export function GameEventClientPage({ game }: GameEventClientPageProps) {
         gameId={game.id}
         setSearch={setSearch}
         onDeleteTable={onDeleteTable}
-         isLoading={isLoading}
+        isLoading={isLoading}
       />
 
       <div className="flex-grow overflow-auto">
